@@ -6,6 +6,6 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="test-gen"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="/home/milan/dds/lib/hu.bme.mit.gamma.ddslib.jar"/>
+	<classpathentry kind="lib" path="/git/god_demo/lib/crossroad/hu.bme.mit.gamma.ddslib.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
