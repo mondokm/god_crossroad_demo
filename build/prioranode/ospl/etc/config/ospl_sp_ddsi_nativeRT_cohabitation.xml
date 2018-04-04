@@ -1,0 +1,80 @@
+<OpenSplice>
+   <Domain>
+      <Name>ospl_sp_ddsi_nativeRT_cohabitation</Name>
+      <Id>0</Id>
+      <SingleProcess>true</SingleProcess>
+      <Description>Stand-alone 'single-process' deployment using DDSI and RTNetworking in cohabitation mode.</Description>
+      <Lease>
+         <ExpiryTime update_factor="0.2">10.0</ExpiryTime>
+      </Lease>
+      <Service name="ddsi2">
+         <Command>ddsi2</Command>
+      </Service>
+      <Service name="networking">
+         <Command>networking</Command>
+      </Service>
+      <Service name="durability">
+         <Command>durability</Command>
+      </Service>
+      <Service name="cmsoap">
+         <Command>cmsoap</Command>
+      </Service>
+   </Domain>
+   <NetworkService name="networking">
+      <Partitioning>
+         <GlobalPartition Address="broadcast"/>
+      </Partitioning>
+      <Channels>
+         <Channel default="true" enabled="true" name="BestEffort" reliable="false">
+            <PortNr>54400</PortNr>
+         </Channel>
+         <Channel enabled="true" name="Reliable" reliable="true">
+            <PortNr>54410</PortNr>
+         </Channel>
+      </Channels>
+      <Discovery enabled="true">
+         <PortNr>54420</PortNr>
+      </Discovery>
+   </NetworkService>
+   <DDSI2Service name="ddsi2">
+      <General>
+         <NetworkInterfaceAddress>AUTO</NetworkInterfaceAddress>
+         <AllowMulticast>true</AllowMulticast>
+         <EnableMulticastLoopback>true</EnableMulticastLoopback>
+         <CoexistWithNativeNetworking>true</CoexistWithNativeNetworking>
+      </General>
+      <Compatibility>
+<!-- see the release notes and/or the OpenSplice configurator on DDSI interoperability -->
+         <StandardsConformance>lax</StandardsConformance>
+<!-- the following one is necessary only for TwinOaks CoreDX DDS compatibility -->
+<!-- <ExplicitlyPublishQosSetToDefault>true</ExplicitlyPublishQosSetToDefault> -->
+      </Compatibility>
+   </DDSI2Service>
+   <DurabilityService name="durability">
+      <Network>
+         <InitialDiscoveryPeriod>10.0</InitialDiscoveryPeriod>
+         <Alignment>
+            <TimeAlignment>false</TimeAlignment>
+            <RequestCombinePeriod>
+               <Initial>2.5</Initial>
+               <Operational>0.1</Operational>
+            </RequestCombinePeriod>
+         </Alignment>
+         <WaitForAttachment maxWaitCount="100" >
+            <ServiceName>networking</ServiceName>
+            <ServiceName>ddsi2</ServiceName>
+         </WaitForAttachment>
+      </Network>
+      <NameSpaces>
+         <NameSpace name="defaultNamespace">
+            <Partition>*</Partition>
+         </NameSpace>
+         <Policy alignee="Initial" aligner="true" durability="Durable" nameSpace="defaultNamespace"/>
+      </NameSpaces>
+   </DurabilityService>
+   <TunerService name="cmsoap">
+      <Server>
+         <PortNr>Auto</PortNr>
+      </Server>
+   </TunerService>
+</OpenSplice>

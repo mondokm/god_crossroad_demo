@@ -11,7 +11,7 @@ import com.pi4j.io.gpio.RaspiPin;
 
 public class PedestrianBProgram {
 
-	PriorNode node;
+	PriorBNode node;
 	GpioController gpio;
 	GpioPinDigitalOutput greenPin, redPin;
 	
@@ -23,11 +23,12 @@ public class PedestrianBProgram {
 	
 	public void run() {
 		gpio = GpioFactory.getInstance();
-		greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_02, "MyLED", PinState.LOW);
-		redPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_04, "MyLED", PinState.LOW);
+		greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED", PinState.HIGH);
+		redPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED", PinState.HIGH);
 		
 		node=new PriorNode();
 		node.getPriorityOutput().registerListener(new LightsListener());
+		node.start();
 	}
 	
 	class LightsListener implements LightCommandsInterface.Listener.Provided{

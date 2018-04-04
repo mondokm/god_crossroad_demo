@@ -1,0 +1,5 @@
+SPLICE_JAVA=pvm
+SPLICE_JAVAC="jdtc -1.6"
+SPLICE_EXTRA_CP=$PERC_CLASSPATH
+test -d "$JACORB_HOME" && SPLICE_EXTRA_CP=$JACORB_HOME/lib/endorsed/jacorb.jar:$JACORB_HOME/lib/endorsed/logkit.jar:$JACORB_HOME/lib/endorsed/avalon-framework.jar:$PERC_CLASSPATH
+export SPLICE_JAVA SPLICE_JAVAC SPLICE_EXTRA_CP

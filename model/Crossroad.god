@@ -7,7 +7,7 @@ node ControllerNode running controller
 node PriorANode running priorA
 [
 	platform armv7_linux
-	main_class "prioranode.PriorAProgram"
+	main_class "prioranode.PriorityAProgram"
 ]
 node SecondaryANode running secondaryA
 [
@@ -22,7 +22,7 @@ node PedestrianANode running pedestrianA
 node PriorBNode running priorB
 [
 	platform armv7_linux
-	main_class "priorbnode.PriorBProgram"
+	main_class "priorbnode.PriorityBProgram"
 ]
 node SecondaryBNode running secondaryB
 [

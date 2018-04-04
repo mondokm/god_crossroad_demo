@@ -1,0 +1,66 @@
+/*
+ *                         Vortex OpenSplice
+ *
+ *   This software and documentation are Copyright 2006 to 2017 ADLINK
+ *   Technology Limited, its affiliated companies and licensors. All rights
+ *   reserved.
+ *
+ *   Licensed under the ADLINK Software License Agreement Rev 2.7 2nd October
+ *   2014 (the "License"); you may not use this file except in compliance with
+ *   the License.
+ *   You may obtain a copy of the License at:
+ *                      $OSPL_HOME/LICENSE
+ *
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
+
+#ifndef _DDS_SERVICE_IDL_
+#define _DDS_SERVICE_IDL_
+
+
+module  DDS_RMI {
+
+  const long Diffusion_Service = -1 ;
+  struct Identification {
+    string server_class ;   // provide info on service type, defined by full interface scoped name
+    // example ::IMV::TimeService
+    string server_impl;     // provide information detail on implementation
+    // example "Nanosecond accuracy TimeService"
+    long server_instance;   // ensure uniqueness (obtained through server configuration)
+  };
+#pragma keylist Identification server_impl server_instance
+
+
+  typedef sequence<string>	method_list;
+
+  struct Definition {
+    string server_class ;   // provide info on service type, defined by full interface scoped name
+    // example ::IMV::TimeService
+    method_list server_api; // list of in & out topic xml strings
+  };
+#pragma keylist Definition server_class
+
+  struct Client_Identification {
+    string client_impl;    // client info
+    long client_instance;  // ensure uniqueness with above
+    unsigned long request_id;
+  };
+
+  struct Request_Header {          // added to requests topics
+    Identification service_id;
+    Client_Identification client_id; // key for requests topics
+  };
+
+  // Inherit this interface to ask compiler service model generation
+  local interface Services  {
+  };
+
+  // Inherit this interface to ask compiler publish model generation
+  // all methods should be oneway 
+  local interface Diffusion {
+  };
+};
+#endif

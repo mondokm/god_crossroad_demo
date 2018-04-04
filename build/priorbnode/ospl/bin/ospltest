@@ -1,0 +1,5 @@
+#
+# The Software and documentation are Copyright 2016 PrismTech Canada Inc. All rights reserved.
+#
+
+ospljre -cp $OSPL_HOME/jar/ospltest.jar:$OSPL_HOME/jar/cmapi.jar:$OSPL_HOME/jar/tooling_common.jar:$OSPL_HOME/jar/rlm.jar:$OSPL_HOME/jar/dcpsprotobuf.jar:$OSPL_HOME/jar/cmdataadapter.jar -DOSPL_HOME=$OSPL_HOME -DADLINK_LICENSE=$ADLINK_LICENSE org.opensplice.tools.ospltool.OsplTool $@ &

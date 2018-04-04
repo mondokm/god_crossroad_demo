@@ -1,0 +1,85 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+JAVAC         = $(SPLICE_JAVAC)
+JAR           = jar
+JAVACFLAGS    = $(GENFLAGS)
+CLASSEXT      = .class
+CLASSDIR      = classes/
+OUTPUT_OPTION = -d $(CLASSDIR)
+COMPILE.java  = $(JAVAC) $(JAVACFLAGS) -cp $(JAVACCPATH) 
+JAVACCPATH    = "$(SPLICE_EXTRA_CP):Saj_RoundTrip_Types.jar:$(CLASSDIR):../../../../jar/dcpssaj.jar:"
+MAKEFILE      = Makefile.Saj_RoundTrip_Pong
+DEPENDENCIES  = $(MAKEFILE)
+LTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+GENFLAGS      =  
+CLASSES       =  $(CLASSDIR)pong$(CLASSEXT) $(CLASSDIR)Pong_impl$(CLASSEXT) $(CLASSDIR)Entities$(CLASSEXT) $(CLASSDIR)ExampleUtilities$(CLASSEXT) $(CLASSDIR)ExampleError$(CLASSEXT)
+JARCLASSES    =  pong$(CLASSEXT) Pong_impl$(CLASSEXT) Entities$(CLASSEXT) ExampleUtilities$(CLASSEXT) ExampleError$(CLASSEXT)
+JAREXT        = .jar
+MAINCLASS     = pong
+JARFILE       = $(LTARGETDIR)$(LIBPREFIX)Saj_RoundTrip_Pong$(LIBSUFFIX)$(JAREXT)
+MANIFEST      = Saj_RoundTrip_Pong.manifest
+JARFLAGS      = cvfm
+SRC           = pong.java Pong_impl.java Entities.java ExampleUtilities.java ExampleError.java
+CLASSES       += classes/Pong_impl*.class
+JARCLASSES    += Pong_impl*.class
+JARCLASSES    += ExampleUtilities*.class
+
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(JARFILE)
+
+$(JARFILE): $(CLASSES) $(CLASSDIR)$(MANIFEST)
+	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
+	cd $(CLASSDIR) && $(JAR) $(JARFLAGS) $(JARFILE) $(MANIFEST) $(JARCLASSES) 
+	$(MV) $(CLASSDIR)/$(JARFILE) .
+
+$(CLASSDIR)$(MANIFEST):
+	echo Class-Path: Saj_RoundTrip_Types.jar ../../../../jar/dcpssaj.jar > $(CLASSDIR)$(MANIFEST)
+	echo Main-Class: $(MAINCLASS) >> $(CLASSDIR)$(MANIFEST)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+$(CLASSDIR)pong$(CLASSEXT): pong.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) pong.java
+
+$(CLASSDIR)Pong_impl$(CLASSEXT): Pong_impl.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) Pong_impl.java
+
+$(CLASSDIR)Entities$(CLASSEXT): Entities.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) Entities.java
+
+$(CLASSDIR)ExampleUtilities$(CLASSEXT): ExampleUtilities.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ExampleUtilities.java
+
+$(CLASSDIR)ExampleError$(CLASSEXT): ExampleError.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ExampleError.java
+
+clean:
+	-$(RM) $(CLASSES)
+
+realclean: clean
+	-$(RM) $(BIN)
+	-$(RM) $(CLASSDIR)$(MANIFEST)
+
+check-syntax:
+	$(COMPILE.java) $(EXPORTFLAGS) $(CHK_SOURCES)
+
