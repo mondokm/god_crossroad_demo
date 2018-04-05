@@ -1,7 +1,7 @@
 package pedestrianbnode;
 
 import hu.bme.mit.gamma.impl.interfaces.LightCommandsInterface;
-import hu.bme.mit.gamma.impl.priornode.PriorNode;
+import hu.bme.mit.gamma.impl.pedestrianbnode.PedestrianBNode;
 
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
@@ -11,7 +11,7 @@ import com.pi4j.io.gpio.RaspiPin;
 
 public class PedestrianBProgram {
 
-	PriorBNode node;
+	PedestrianBNode node;
 	GpioController gpio;
 	GpioPinDigitalOutput greenPin, redPin;
 	
@@ -26,8 +26,8 @@ public class PedestrianBProgram {
 		greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED", PinState.HIGH);
 		redPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_08, "MyLED", PinState.HIGH);
 		
-		node=new PriorNode();
-		node.getPriorityOutput().registerListener(new LightsListener());
+		node=new PedestrianBNode();
+		node.getPedestrianBOutput().registerListener(new LightsListener());
 		node.start();
 	}
 	
