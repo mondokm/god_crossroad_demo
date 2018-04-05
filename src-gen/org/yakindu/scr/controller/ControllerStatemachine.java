@@ -659,6 +659,12 @@ public class ControllerStatemachine implements IControllerStatemachine {
 	/* Entry action for state 'Resetting'. */
 	private void entryAction_main_region_Resetting() {
 		timer.setTimer(this, 5, 500, false);
+		
+		sCIPriorityPolice.raiseReset();
+		
+		sCISecondaryPolice.raiseReset();
+		
+		sCIPedestrianPolice.raiseReset();
 	}
 	
 	/* Entry action for state 'Error'. */
