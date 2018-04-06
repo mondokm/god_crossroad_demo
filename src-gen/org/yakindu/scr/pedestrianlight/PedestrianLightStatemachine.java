@@ -137,8 +137,6 @@ public class PedestrianLightStatemachine implements IPedestrianLightStatemachine
 	private ITimer timer;
 	
 	private final boolean[] timeEvents = new boolean[2];
-	
-	
 	public PedestrianLightStatemachine() {
 		sCILightCommands = new SCILightCommandsImpl();
 		sCIPoliceInterrupt = new SCIPoliceInterruptImpl();
@@ -150,7 +148,6 @@ public class PedestrianLightStatemachine implements IPedestrianLightStatemachine
 		if (timer == null) {
 			throw new IllegalStateException("timer not set.");
 		}
-		
 		for (int i = 0; i < 1; i++) {
 			stateVector[i] = State.$NullState$;
 		}
@@ -169,7 +166,6 @@ public class PedestrianLightStatemachine implements IPedestrianLightStatemachine
 		if (timer == null) {
 			throw new IllegalStateException("timer not set.");
 		}
-	
 		enterSequence_main_region_default();
 	}
 	

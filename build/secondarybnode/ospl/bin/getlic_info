@@ -1,2 +1,0 @@
-@@INSTALLDIR@@/@@INSTTYPE@@/@@PLATFORM@@/bin/rlmutil rlmhostid -q ether >> @@INSTALLDIR@@/@@INSTTYPE@@/@@PLATFORM@@/etc/license_info.txt
-@@INSTALLDIR@@/@@INSTTYPE@@/@@PLATFORM@@/bin/rlmutil rlmhostid -q ip >> @@INSTALLDIR@@/@@INSTTYPE@@/@@PLATFORM@@/etc/license_info.txt

@@ -1,1 +1,0 @@
-ospljre -cp $OSPL_HOME/jar/nodemon.jar:$OSPL_HOME/jar/dcpssaj.jar -DOSPL_HOME=$OSPL_HOME com.prismtech.opensplice.hm.nodeinfoservice.App $@ 

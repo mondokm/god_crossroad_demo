@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import hu.bme.mit.gamma.impl.event.*;
 import hu.bme.mit.gamma.impl.interfaces.*;
 import org.yakindu.scr.pedestrianlight.IPedestrianLightStatemachine.SCILightCommandsListener;
+import org.yakindu.scr.TimerService;
+import org.yakindu.scr.ITimer;
 import org.yakindu.scr.pedestrianlight.PedestrianLightStatemachine;
 import org.yakindu.scr.pedestrianlight.PedestrianLightStatemachine.State;
 
@@ -14,9 +16,9 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 	// The wrapped Yakindu statemachine
 	private PedestrianLightStatemachine pedestrianLightStatemachine = new PedestrianLightStatemachine();
 	// Port instances
+	private LightCommands lightCommands = new LightCommands();
 	private PoliceInterrupt policeInterrupt = new PoliceInterrupt();
 	private Control control = new Control();
-	private LightCommands lightCommands = new LightCommands();
 	// Indicates which queues are active in this cycle
 	private boolean insertQueue = true;
 	private boolean processQueue = false;
@@ -26,6 +28,7 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 	
 	public PedestrianLightStatechart() {
 		// Initializing and entering the wrapped statemachine
+		pedestrianLightStatemachine.setTimer(new TimerService());
 		pedestrianLightStatemachine.init();
 		pedestrianLightStatemachine.enter();
 	}
@@ -88,11 +91,11 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 		while (!eventQueue.isEmpty()) {
 				Event event = eventQueue.remove();
 				switch (event.getEvent()) {
-					case "PoliceInterrupt.Police": 
-						pedestrianLightStatemachine.getSCIPoliceInterrupt().raisePolice();
-					break;
 					case "PoliceInterrupt.Reset": 
 						pedestrianLightStatemachine.getSCIPoliceInterrupt().raiseReset();
+					break;
+					case "PoliceInterrupt.Police": 
+						pedestrianLightStatemachine.getSCIPoliceInterrupt().raisePolice();
 					break;
 					case "Control.Toggle": 
 						pedestrianLightStatemachine.getSCIControl().raiseToggle();
@@ -105,17 +108,75 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 	}    		
 	
 	// Inner classes representing Ports
+	public class LightCommands implements LightCommandsInterface.Provided {
+		private List<LightCommandsInterface.Listener.Provided> registeredListeners = new LinkedList<LightCommandsInterface.Listener.Provided>();
+
+
+		@Override
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayGreen();
+		}
+		@Override
+		public boolean isRaisedDisplayNone() {
+			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayRed() {
+			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayRed();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayYellow();
+		}
+		@Override
+		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
+			registeredListeners.add(listener);
+			pedestrianLightStatemachine.getSCILightCommands().getListeners().add(new SCILightCommandsListener() {
+				@Override
+				public void onDisplayGreenRaised() {
+					listener.raiseDisplayGreen();
+				}
+				
+				@Override
+				public void onDisplayNoneRaised() {
+					listener.raiseDisplayNone();
+				}
+				
+				@Override
+				public void onDisplayRedRaised() {
+					listener.raiseDisplayRed();
+				}
+				
+				@Override
+				public void onDisplayYellowRaised() {
+					listener.raiseDisplayYellow();
+				}
+			});
+		}
+		
+		@Override
+		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
+			return registeredListeners;
+		}
+
+	}
+	
+	@Override
+	public LightCommands getLightCommands() {
+		return lightCommands;
+	}
+	
 	public class PoliceInterrupt implements PoliceInterruptInterface.Required {
 		private List<PoliceInterruptInterface.Listener.Required> registeredListeners = new LinkedList<PoliceInterruptInterface.Listener.Required>();
 
 		@Override
-		public void raisePolice() {
-			getInsertQueue().add(new Event("PoliceInterrupt.Police", null));
+		public void raiseReset() {
+			getInsertQueue().add(new Event("PoliceInterrupt.Reset", null));
 		}
 		
 		@Override
-		public void raiseReset() {
-			getInsertQueue().add(new Event("PoliceInterrupt.Reset", null));
+		public void raisePolice() {
+			getInsertQueue().add(new Event("PoliceInterrupt.Police", null));
 		}
 
 		@Override
@@ -160,68 +221,14 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 		return control;
 	}
 	
-	public class LightCommands implements LightCommandsInterface.Provided {
-		private List<LightCommandsInterface.Listener.Provided> registeredListeners = new LinkedList<LightCommandsInterface.Listener.Provided>();
-
-
-		@Override
-		public boolean isRaisedDisplayRed() {
-			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayRed();
-		}
-		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayYellow();
-		}
-		@Override
-		public boolean isRaisedDisplayGreen() {
-			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayGreen();
-		}
-		@Override
-		public boolean isRaisedDisplayNone() {
-			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayNone();
-		}
-		@Override
-		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
-			registeredListeners.add(listener);
-			pedestrianLightStatemachine.getSCILightCommands().getListeners().add(new SCILightCommandsListener() {
-				@Override
-				public void onDisplayRedRaised() {
-					listener.raiseDisplayRed();
-				}
-				
-				@Override
-				public void onDisplayYellowRaised() {
-					listener.raiseDisplayYellow();
-				}
-				
-				@Override
-				public void onDisplayGreenRaised() {
-					listener.raiseDisplayGreen();
-				}
-				
-				@Override
-				public void onDisplayNoneRaised() {
-					listener.raiseDisplayNone();
-				}
-			});
-		}
-		
-		@Override
-		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
-			return registeredListeners;
-		}
-
-	}
-	
-	@Override
-	public LightCommands getLightCommands() {
-		return lightCommands;
-	}
-	
 	/** Checks whether the wrapped statemachine is in the given state. */
 	public boolean isStateActive(State state) {
 		return pedestrianLightStatemachine.isStateActive(state);
 	}
 	
+	public void setTimer(ITimer timer) {
+		pedestrianLightStatemachine.setTimer(timer);
+		reset();
+	}
 	
 }

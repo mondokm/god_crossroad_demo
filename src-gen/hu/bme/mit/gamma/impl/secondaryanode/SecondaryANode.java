@@ -8,10 +8,10 @@ import org.yakindu.scr.ITimer;
 
 import hu.bme.mit.gamma.impl.interfaces.*;
 import hu.bme.mit.gamma.impl.channels.*;
-import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
-import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
-import hu.bme.mit.gamma.impl.controllerwrapper.*;
 import hu.bme.mit.gamma.impl.monitorwrapper.*;
+import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
+import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
+import hu.bme.mit.gamma.impl.controllerwrapper.*;
 
 public class SecondaryANode  {			
 	// Component instances
@@ -50,20 +50,20 @@ public class SecondaryANode  {
 	
 		
 		@Override
-		public boolean isRaisedDisplayNone() {
-			return secondaryA.getLightCommands().isRaisedDisplayNone();
+		public boolean isRaisedDisplayGreen() {
+			return secondaryA.getLightCommands().isRaisedDisplayGreen();
 		}
 		@Override
 		public boolean isRaisedDisplayYellow() {
 			return secondaryA.getLightCommands().isRaisedDisplayYellow();
 		}
 		@Override
-		public boolean isRaisedDisplayRed() {
-			return secondaryA.getLightCommands().isRaisedDisplayRed();
+		public boolean isRaisedDisplayNone() {
+			return secondaryA.getLightCommands().isRaisedDisplayNone();
 		}
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return secondaryA.getLightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayRed() {
+			return secondaryA.getLightCommands().isRaisedDisplayRed();
 		}
 		
 		@Override

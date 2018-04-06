@@ -1,18 +1,18 @@
 package hu.bme.mit.gamma.impl.controller;
 
-import hu.bme.mit.gamma.impl.interfaces.ControlInterface;
 import hu.bme.mit.gamma.impl.interfaces.PoliceInterruptInterface;
+import hu.bme.mit.gamma.impl.interfaces.ControlInterface;
 import hu.bme.mit.gamma.impl.interfaces.ErrorInterface;
 
 public interface ControllerStatechartInterface {
 	
-	ControlInterface.Provided getPriorityControl();
 	PoliceInterruptInterface.Required getPoliceInterrupt();
-	PoliceInterruptInterface.Provided getPriorityPolice();
-	ControlInterface.Provided getPedestrianControl();
-	PoliceInterruptInterface.Provided getSecondaryPolice();
 	ControlInterface.Provided getSecondaryControl();
+	PoliceInterruptInterface.Provided getPriorityPolice();
+	ControlInterface.Provided getPriorityControl();
+	ControlInterface.Provided getPedestrianControl();
 	ErrorInterface.Required getError();
+	PoliceInterruptInterface.Provided getSecondaryPolice();
 	PoliceInterruptInterface.Provided getPedestrianPolice();
 	
 	void runCycle();

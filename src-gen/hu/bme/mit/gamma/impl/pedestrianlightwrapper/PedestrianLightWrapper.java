@@ -17,9 +17,9 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 	private PedestrianLightStatechart pedestrianLightStatechart = new PedestrianLightStatechart();
 	// Control port instances
 	// Wrapped port instances
+	private LightCommands lightCommands = new LightCommands();
 	private PoliceInterrupt policeInterrupt = new PoliceInterrupt();
 	private Control control = new Control();
-	private LightCommands lightCommands = new LightCommands();
 	// Clocks
 	private ITimer timerService;
 	private final int clockSignal = 0;
@@ -77,15 +77,55 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 	// Inner classes representing control ports
 	
 	// Inner classes representing wrapped ports
+	public class LightCommands implements LightCommandsInterface.Provided {
+		
+		
+		@Override
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayGreen();
+		}
+		
+		@Override
+		public boolean isRaisedDisplayNone() {
+			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayNone();
+		}
+		
+		@Override
+		public boolean isRaisedDisplayRed() {
+			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayRed();
+		}
+		
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayYellow();
+		}
+		
+		@Override
+		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
+			pedestrianLightStatechart.getLightCommands().registerListener(listener);
+		}
+		
+		@Override
+		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
+			return pedestrianLightStatechart.getLightCommands().getRegisteredListeners();
+		}
+		
+	}
+	
+	@Override
+	public LightCommands getLightCommands() {
+		return lightCommands;
+	}
+	
 	public class PoliceInterrupt implements PoliceInterruptInterface.Required {
 		
 		@Override
-		public void raisePolice() {
-			pingMessages.offer(new Event("PoliceInterrupt.police", null));
-		}
-		@Override
 		public void raiseReset() {
 			pingMessages.offer(new Event("PoliceInterrupt.reset", null));
+		}
+		@Override
+		public void raisePolice() {
+			pingMessages.offer(new Event("PoliceInterrupt.police", null));
 		}
 		
 		
@@ -131,46 +171,6 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 		return control;
 	}
 	
-	public class LightCommands implements LightCommandsInterface.Provided {
-		
-		
-		@Override
-		public boolean isRaisedDisplayRed() {
-			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayRed();
-		}
-		
-		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayYellow();
-		}
-		
-		@Override
-		public boolean isRaisedDisplayGreen() {
-			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayGreen();
-		}
-		
-		@Override
-		public boolean isRaisedDisplayNone() {
-			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayNone();
-		}
-		
-		@Override
-		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
-			pedestrianLightStatechart.getLightCommands().registerListener(listener);
-		}
-		
-		@Override
-		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
-			return pedestrianLightStatechart.getLightCommands().getRegisteredListeners();
-		}
-		
-	}
-	
-	@Override
-	public LightCommands getLightCommands() {
-		return lightCommands;
-	}
-	
 	/** Operation. */
 	@Override
 	public void run() {
@@ -196,11 +196,11 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 	
 	private void forwardEvent(Event event) {
 		switch (event.getEvent()) {
-			case "PoliceInterrupt.police":
-				pedestrianLightStatechart.getPoliceInterrupt().raisePolice();
-			break;
 			case "PoliceInterrupt.reset":
 				pedestrianLightStatechart.getPoliceInterrupt().raiseReset();
+			break;
+			case "PoliceInterrupt.police":
+				pedestrianLightStatechart.getPoliceInterrupt().raisePolice();
 			break;
 			case "Control.toggle":
 				pedestrianLightStatechart.getControl().raiseToggle();
@@ -240,6 +240,7 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 	
 	public void setTimer(ITimer timer) {
 		timerService = timer;
+		pedestrianLightStatechart.setTimer(timer);
 		init(); // To set the service into functioning state wih clocks
 	}
 	

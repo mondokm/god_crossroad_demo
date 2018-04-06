@@ -8,10 +8,10 @@ import org.yakindu.scr.ITimer;
 
 import hu.bme.mit.gamma.impl.interfaces.*;
 import hu.bme.mit.gamma.impl.channels.*;
-import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
-import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
-import hu.bme.mit.gamma.impl.controllerwrapper.*;
 import hu.bme.mit.gamma.impl.monitorwrapper.*;
+import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
+import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
+import hu.bme.mit.gamma.impl.controllerwrapper.*;
 
 public class PedestrianBNode  {			
 	// Component instances
@@ -50,20 +50,20 @@ public class PedestrianBNode  {
 	
 		
 		@Override
-		public boolean isRaisedDisplayNone() {
-			return pedestrianB.getLightCommands().isRaisedDisplayNone();
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianB.getLightCommands().isRaisedDisplayGreen();
 		}
 		@Override
 		public boolean isRaisedDisplayYellow() {
 			return pedestrianB.getLightCommands().isRaisedDisplayYellow();
 		}
 		@Override
-		public boolean isRaisedDisplayRed() {
-			return pedestrianB.getLightCommands().isRaisedDisplayRed();
+		public boolean isRaisedDisplayNone() {
+			return pedestrianB.getLightCommands().isRaisedDisplayNone();
 		}
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return pedestrianB.getLightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayRed() {
+			return pedestrianB.getLightCommands().isRaisedDisplayRed();
 		}
 		
 		@Override

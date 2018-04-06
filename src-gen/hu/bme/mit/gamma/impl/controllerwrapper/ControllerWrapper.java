@@ -17,14 +17,14 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 	private ControllerStatechart controllerStatechart = new ControllerStatechart();
 	// Control port instances
 	// Wrapped port instances
-	private SecondaryControl secondaryControl = new SecondaryControl();
-	private PriorityControl priorityControl = new PriorityControl();
-	private PedestrianControl pedestrianControl = new PedestrianControl();
 	private Error error = new Error();
-	private PedestrianPolice pedestrianPolice = new PedestrianPolice();
-	private PoliceInterrupt policeInterrupt = new PoliceInterrupt();
 	private PriorityPolice priorityPolice = new PriorityPolice();
+	private PedestrianControl pedestrianControl = new PedestrianControl();
+	private PriorityControl priorityControl = new PriorityControl();
 	private SecondaryPolice secondaryPolice = new SecondaryPolice();
+	private PoliceInterrupt policeInterrupt = new PoliceInterrupt();
+	private PedestrianPolice pedestrianPolice = new PedestrianPolice();
+	private SecondaryControl secondaryControl = new SecondaryControl();
 	// Clocks
 	private ITimer timerService;
 	private final int clockSignal = 0;
@@ -82,54 +82,59 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 	// Inner classes representing control ports
 	
 	// Inner classes representing wrapped ports
-	public class SecondaryControl implements ControlInterface.Provided {
+	public class Error implements ErrorInterface.Required {
+		
+		@Override
+		public void raiseHealthError() {
+			pingMessages.offer(new Event("Error.healthError", null));
+		}
 		
 		
 		@Override
-		public boolean isRaisedToggle() {
-			return controllerStatechart.getSecondaryControl().isRaisedToggle();
+		public void registerListener(ErrorInterface.Listener.Required listener) {
+			controllerStatechart.getError().registerListener(listener);
 		}
 		
 		@Override
-		public void registerListener(ControlInterface.Listener.Provided listener) {
-			controllerStatechart.getSecondaryControl().registerListener(listener);
-		}
-		
-		@Override
-		public List<ControlInterface.Listener.Provided> getRegisteredListeners() {
-			return controllerStatechart.getSecondaryControl().getRegisteredListeners();
-		}
-		
-	}
-	
-	@Override
-	public SecondaryControl getSecondaryControl() {
-		return secondaryControl;
-	}
-	
-	public class PriorityControl implements ControlInterface.Provided {
-		
-		
-		@Override
-		public boolean isRaisedToggle() {
-			return controllerStatechart.getPriorityControl().isRaisedToggle();
-		}
-		
-		@Override
-		public void registerListener(ControlInterface.Listener.Provided listener) {
-			controllerStatechart.getPriorityControl().registerListener(listener);
-		}
-		
-		@Override
-		public List<ControlInterface.Listener.Provided> getRegisteredListeners() {
-			return controllerStatechart.getPriorityControl().getRegisteredListeners();
+		public List<ErrorInterface.Listener.Required> getRegisteredListeners() {
+			return controllerStatechart.getError().getRegisteredListeners();
 		}
 		
 	}
 	
 	@Override
-	public PriorityControl getPriorityControl() {
-		return priorityControl;
+	public Error getError() {
+		return error;
+	}
+	
+	public class PriorityPolice implements PoliceInterruptInterface.Provided {
+		
+		
+		@Override
+		public boolean isRaisedReset() {
+			return controllerStatechart.getPriorityPolice().isRaisedReset();
+		}
+		
+		@Override
+		public boolean isRaisedPolice() {
+			return controllerStatechart.getPriorityPolice().isRaisedPolice();
+		}
+		
+		@Override
+		public void registerListener(PoliceInterruptInterface.Listener.Provided listener) {
+			controllerStatechart.getPriorityPolice().registerListener(listener);
+		}
+		
+		@Override
+		public List<PoliceInterruptInterface.Listener.Provided> getRegisteredListeners() {
+			return controllerStatechart.getPriorityPolice().getRegisteredListeners();
+		}
+		
+	}
+	
+	@Override
+	public PriorityPolice getPriorityPolice() {
+		return priorityPolice;
 	}
 	
 	public class PedestrianControl implements ControlInterface.Provided {
@@ -157,70 +162,70 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 		return pedestrianControl;
 	}
 	
-	public class Error implements ErrorInterface.Required {
-		
-		@Override
-		public void raiseHealthError() {
-			pingMessages.offer(new Event("Error.healthError", null));
-		}
+	public class PriorityControl implements ControlInterface.Provided {
 		
 		
 		@Override
-		public void registerListener(ErrorInterface.Listener.Required listener) {
-			controllerStatechart.getError().registerListener(listener);
+		public boolean isRaisedToggle() {
+			return controllerStatechart.getPriorityControl().isRaisedToggle();
 		}
 		
 		@Override
-		public List<ErrorInterface.Listener.Required> getRegisteredListeners() {
-			return controllerStatechart.getError().getRegisteredListeners();
+		public void registerListener(ControlInterface.Listener.Provided listener) {
+			controllerStatechart.getPriorityControl().registerListener(listener);
+		}
+		
+		@Override
+		public List<ControlInterface.Listener.Provided> getRegisteredListeners() {
+			return controllerStatechart.getPriorityControl().getRegisteredListeners();
 		}
 		
 	}
 	
 	@Override
-	public Error getError() {
-		return error;
+	public PriorityControl getPriorityControl() {
+		return priorityControl;
 	}
 	
-	public class PedestrianPolice implements PoliceInterruptInterface.Provided {
+	public class SecondaryPolice implements PoliceInterruptInterface.Provided {
 		
-		
-		@Override
-		public boolean isRaisedPolice() {
-			return controllerStatechart.getPedestrianPolice().isRaisedPolice();
-		}
 		
 		@Override
 		public boolean isRaisedReset() {
-			return controllerStatechart.getPedestrianPolice().isRaisedReset();
+			return controllerStatechart.getSecondaryPolice().isRaisedReset();
+		}
+		
+		@Override
+		public boolean isRaisedPolice() {
+			return controllerStatechart.getSecondaryPolice().isRaisedPolice();
 		}
 		
 		@Override
 		public void registerListener(PoliceInterruptInterface.Listener.Provided listener) {
-			controllerStatechart.getPedestrianPolice().registerListener(listener);
+			controllerStatechart.getSecondaryPolice().registerListener(listener);
 		}
 		
 		@Override
 		public List<PoliceInterruptInterface.Listener.Provided> getRegisteredListeners() {
-			return controllerStatechart.getPedestrianPolice().getRegisteredListeners();
+			return controllerStatechart.getSecondaryPolice().getRegisteredListeners();
 		}
 		
 	}
 	
 	@Override
-	public PedestrianPolice getPedestrianPolice() {
-		return pedestrianPolice;
+	public SecondaryPolice getSecondaryPolice() {
+		return secondaryPolice;
 	}
 	
 	public class PoliceInterrupt implements PoliceInterruptInterface.Required {
 		
 		@Override
-		public void raisePolice() {
-			pingMessages.offer(new Event("PoliceInterrupt.police", null));
-		}
-		@Override
 		public void raiseReset() {
 			pingMessages.offer(new Event("PoliceInterrupt.reset", null));
+		}
+		@Override
+		public void raisePolice() {
+			pingMessages.offer(new Event("PoliceInterrupt.police", null));
 		}
 		
 		
@@ -241,64 +246,59 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 		return policeInterrupt;
 	}
 	
-	public class PriorityPolice implements PoliceInterruptInterface.Provided {
+	public class PedestrianPolice implements PoliceInterruptInterface.Provided {
 		
-		
-		@Override
-		public boolean isRaisedPolice() {
-			return controllerStatechart.getPriorityPolice().isRaisedPolice();
-		}
 		
 		@Override
 		public boolean isRaisedReset() {
-			return controllerStatechart.getPriorityPolice().isRaisedReset();
+			return controllerStatechart.getPedestrianPolice().isRaisedReset();
+		}
+		
+		@Override
+		public boolean isRaisedPolice() {
+			return controllerStatechart.getPedestrianPolice().isRaisedPolice();
 		}
 		
 		@Override
 		public void registerListener(PoliceInterruptInterface.Listener.Provided listener) {
-			controllerStatechart.getPriorityPolice().registerListener(listener);
+			controllerStatechart.getPedestrianPolice().registerListener(listener);
 		}
 		
 		@Override
 		public List<PoliceInterruptInterface.Listener.Provided> getRegisteredListeners() {
-			return controllerStatechart.getPriorityPolice().getRegisteredListeners();
+			return controllerStatechart.getPedestrianPolice().getRegisteredListeners();
 		}
 		
 	}
 	
 	@Override
-	public PriorityPolice getPriorityPolice() {
-		return priorityPolice;
+	public PedestrianPolice getPedestrianPolice() {
+		return pedestrianPolice;
 	}
 	
-	public class SecondaryPolice implements PoliceInterruptInterface.Provided {
+	public class SecondaryControl implements ControlInterface.Provided {
 		
 		
 		@Override
-		public boolean isRaisedPolice() {
-			return controllerStatechart.getSecondaryPolice().isRaisedPolice();
+		public boolean isRaisedToggle() {
+			return controllerStatechart.getSecondaryControl().isRaisedToggle();
 		}
 		
 		@Override
-		public boolean isRaisedReset() {
-			return controllerStatechart.getSecondaryPolice().isRaisedReset();
+		public void registerListener(ControlInterface.Listener.Provided listener) {
+			controllerStatechart.getSecondaryControl().registerListener(listener);
 		}
 		
 		@Override
-		public void registerListener(PoliceInterruptInterface.Listener.Provided listener) {
-			controllerStatechart.getSecondaryPolice().registerListener(listener);
-		}
-		
-		@Override
-		public List<PoliceInterruptInterface.Listener.Provided> getRegisteredListeners() {
-			return controllerStatechart.getSecondaryPolice().getRegisteredListeners();
+		public List<ControlInterface.Listener.Provided> getRegisteredListeners() {
+			return controllerStatechart.getSecondaryControl().getRegisteredListeners();
 		}
 		
 	}
 	
 	@Override
-	public SecondaryPolice getSecondaryPolice() {
-		return secondaryPolice;
+	public SecondaryControl getSecondaryControl() {
+		return secondaryControl;
 	}
 	
 	/** Operation. */
@@ -329,11 +329,11 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 			case "Error.healthError":
 				controllerStatechart.getError().raiseHealthError();
 			break;
-			case "PoliceInterrupt.police":
-				controllerStatechart.getPoliceInterrupt().raisePolice();
-			break;
 			case "PoliceInterrupt.reset":
 				controllerStatechart.getPoliceInterrupt().raiseReset();
+			break;
+			case "PoliceInterrupt.police":
+				controllerStatechart.getPoliceInterrupt().raisePolice();
 			break;
 			default:
 				throw new IllegalArgumentException("No such event!");

@@ -6,30 +6,42 @@ import org.yakindu.scr.ITimer;
 import hu.bme.mit.gamma.impl.interfaces.*;
 import hu.bme.mit.gamma.impl.channels.*;
 import hu.bme.mit.gamma.impl.controllerwrapper.*;
-import hu.bme.mit.gamma.impl.monitorwrapper.*;
 import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
+import hu.bme.mit.gamma.impl.monitorwrapper.*;
 import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
 
 public class Crossroad implements CrossroadInterface {			
 	// Component instances
 	private ControllerWrapper controller = new ControllerWrapper();
-	private TrafficLightWrapper prior = new TrafficLightWrapper();
-	private TrafficLightWrapper secondary = new TrafficLightWrapper();
-	private PedestrianLightWrapper pedestrian = new PedestrianLightWrapper();
+	private TrafficLightWrapper priorA = new TrafficLightWrapper();
+	private TrafficLightWrapper secondaryA = new TrafficLightWrapper();
+	private PedestrianLightWrapper pedestrianA = new PedestrianLightWrapper();
+	private TrafficLightWrapper priorB = new TrafficLightWrapper();
+	private TrafficLightWrapper secondaryB = new TrafficLightWrapper();
+	private PedestrianLightWrapper pedestrianB = new PedestrianLightWrapper();
 	private MonitorWrapper monitor = new MonitorWrapper();
 	// Port instances
 	private Police police = new Police();
-	private PriorityOutput priorityOutput = new PriorityOutput();
-	private SecondaryOutput secondaryOutput = new SecondaryOutput();
-	private PedestrianOutput pedestrianOutput = new PedestrianOutput();
+	private PriorityAOutput priorityAOutput = new PriorityAOutput();
+	private SecondaryAOutput secondaryAOutput = new SecondaryAOutput();
+	private PedestrianAOutput pedestrianAOutput = new PedestrianAOutput();
+	private PriorityBOutput priorityBOutput = new PriorityBOutput();
+	private SecondaryBOutput secondaryBOutput = new SecondaryBOutput();
+	private PedestrianBOutput pedestrianBOutput = new PedestrianBOutput();
 	// Channel instances
+	private ErrorChannelInterface channelErrorOutOfMonitor;
 	private ControlChannelInterface channelPriorityControlOfController;
+	private PoliceInterruptChannelInterface channelSecondaryPoliceOfController;
+	private PoliceInterruptChannelInterface channelPriorityPoliceOfController;
+	private ControlChannelInterface channelSecondaryControlOfController;
+	private ControlChannelInterface channelSecondaryControlOfController;
+	private ControlChannelInterface channelPriorityControlOfController;
+	private PoliceInterruptChannelInterface channelPriorityPoliceOfController;
+	private PoliceInterruptChannelInterface channelSecondaryPoliceOfController;
+	private PoliceInterruptChannelInterface channelPedestrianPoliceOfController;
 	private PoliceInterruptChannelInterface channelPedestrianPoliceOfController;
 	private ControlChannelInterface channelPedestrianControlOfController;
-	private PoliceInterruptChannelInterface channelSecondaryPoliceOfController;
-	private ErrorChannelInterface channelErrorOutOfMonitor;
-	private ControlChannelInterface channelSecondaryControlOfController;
-	private PoliceInterruptChannelInterface channelPriorityPoliceOfController;
+	private ControlChannelInterface channelPedestrianControlOfController;
 	
 	public Crossroad(ITimer timer) {
 		setTimer(timer);
@@ -43,30 +55,33 @@ public class Crossroad implements CrossroadInterface {
 	/** Resets the contained statemachines recursively. Should be used only be the container (composite system) class. */
 	public void reset() {
 		controller.reset();
-		prior.reset();
-		secondary.reset();
-		pedestrian.reset();
+		priorA.reset();
+		secondaryA.reset();
+		pedestrianA.reset();
+		priorB.reset();
+		secondaryB.reset();
+		pedestrianB.reset();
 		monitor.reset();
 	}
 	
 	/** Creates the channel mappings and enters the wrapped statemachines. */
 	private void init() {
 		// Registration of simple channels
-		channelPriorityControlOfController = new ControlChannel(controller.getPriorityControl());
-		channelPriorityControlOfController.registerPort(prior.getControl());
-		channelPedestrianPoliceOfController = new PoliceInterruptChannel(controller.getPedestrianPolice());
-		channelPedestrianPoliceOfController.registerPort(pedestrian.getPoliceInterrupt());
-		channelPedestrianControlOfController = new ControlChannel(controller.getPedestrianControl());
-		channelPedestrianControlOfController.registerPort(pedestrian.getControl());
-		channelSecondaryPoliceOfController = new PoliceInterruptChannel(controller.getSecondaryPolice());
-		channelSecondaryPoliceOfController.registerPort(secondary.getPoliceInterrupt());
 		channelErrorOutOfMonitor = new ErrorChannel(monitor.getErrorOut());
 		channelErrorOutOfMonitor.registerPort(controller.getError());
-		channelSecondaryControlOfController = new ControlChannel(controller.getSecondaryControl());
-		channelSecondaryControlOfController.registerPort(secondary.getControl());
-		channelPriorityPoliceOfController = new PoliceInterruptChannel(controller.getPriorityPolice());
-		channelPriorityPoliceOfController.registerPort(prior.getPoliceInterrupt());
 		// Registration of broadcast channels
+		channelPriorityControlOfController = new ControlChannel(controller.getPriorityControl());
+		channelSecondaryPoliceOfController = new PoliceInterruptChannel(controller.getSecondaryPolice());
+		channelPriorityPoliceOfController = new PoliceInterruptChannel(controller.getPriorityPolice());
+		channelSecondaryControlOfController = new ControlChannel(controller.getSecondaryControl());
+		channelSecondaryControlOfController = new ControlChannel(controller.getSecondaryControl());
+		channelPriorityControlOfController = new ControlChannel(controller.getPriorityControl());
+		channelPriorityPoliceOfController = new PoliceInterruptChannel(controller.getPriorityPolice());
+		channelSecondaryPoliceOfController = new PoliceInterruptChannel(controller.getSecondaryPolice());
+		channelPedestrianPoliceOfController = new PoliceInterruptChannel(controller.getPedestrianPolice());
+		channelPedestrianPoliceOfController = new PoliceInterruptChannel(controller.getPedestrianPolice());
+		channelPedestrianControlOfController = new ControlChannel(controller.getPedestrianControl());
+		channelPedestrianControlOfController = new ControlChannel(controller.getPedestrianControl());
 		reset();
 	}
 	
@@ -74,13 +89,13 @@ public class Crossroad implements CrossroadInterface {
 	public class Police implements PoliceInterruptInterface.Required {
 	
 		@Override
-		public void raisePolice() {
-			controller.getPoliceInterrupt().raisePolice();
+		public void raiseReset() {
+			controller.getPoliceInterrupt().raiseReset();
 		}
 		
 		@Override
-		public void raiseReset() {
-			controller.getPoliceInterrupt().raiseReset();
+		public void raisePolice() {
+			controller.getPoliceInterrupt().raisePolice();
 		}
 		
 		
@@ -101,135 +116,253 @@ public class Crossroad implements CrossroadInterface {
 		return police;
 	}
 	
-	public class PriorityOutput implements LightCommandsInterface.Provided {
+	public class PriorityAOutput implements LightCommandsInterface.Provided {
 	
 		
 		@Override
-		public boolean isRaisedDisplayRed() {
-			return prior.getLightCommands().isRaisedDisplayRed();
-		}
-		@Override
-		public boolean isRaisedDisplayYellow() {
-			return prior.getLightCommands().isRaisedDisplayYellow();
-		}
-		@Override
 		public boolean isRaisedDisplayGreen() {
-			return prior.getLightCommands().isRaisedDisplayGreen();
+			return priorA.getLightCommands().isRaisedDisplayGreen();
 		}
 		@Override
 		public boolean isRaisedDisplayNone() {
-			return prior.getLightCommands().isRaisedDisplayNone();
+			return priorA.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayRed() {
+			return priorA.getLightCommands().isRaisedDisplayRed();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return priorA.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
 		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
-			prior.getLightCommands().registerListener(listener);
+			priorA.getLightCommands().registerListener(listener);
 		}
 		
 		@Override
 		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
-			return prior.getLightCommands().getRegisteredListeners();
+			return priorA.getLightCommands().getRegisteredListeners();
 		}
 		
 	}
 	
 	@Override
-	public PriorityOutput getPriorityOutput() {
-		return priorityOutput;
+	public PriorityAOutput getPriorityAOutput() {
+		return priorityAOutput;
 	}
 	
-	public class SecondaryOutput implements LightCommandsInterface.Provided {
+	public class SecondaryAOutput implements LightCommandsInterface.Provided {
 	
 		
 		@Override
-		public boolean isRaisedDisplayRed() {
-			return secondary.getLightCommands().isRaisedDisplayRed();
-		}
-		@Override
-		public boolean isRaisedDisplayYellow() {
-			return secondary.getLightCommands().isRaisedDisplayYellow();
-		}
-		@Override
 		public boolean isRaisedDisplayGreen() {
-			return secondary.getLightCommands().isRaisedDisplayGreen();
+			return secondaryA.getLightCommands().isRaisedDisplayGreen();
 		}
 		@Override
 		public boolean isRaisedDisplayNone() {
-			return secondary.getLightCommands().isRaisedDisplayNone();
+			return secondaryA.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayRed() {
+			return secondaryA.getLightCommands().isRaisedDisplayRed();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return secondaryA.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
 		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
-			secondary.getLightCommands().registerListener(listener);
+			secondaryA.getLightCommands().registerListener(listener);
 		}
 		
 		@Override
 		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
-			return secondary.getLightCommands().getRegisteredListeners();
+			return secondaryA.getLightCommands().getRegisteredListeners();
 		}
 		
 	}
 	
 	@Override
-	public SecondaryOutput getSecondaryOutput() {
-		return secondaryOutput;
+	public SecondaryAOutput getSecondaryAOutput() {
+		return secondaryAOutput;
 	}
 	
-	public class PedestrianOutput implements LightCommandsInterface.Provided {
+	public class PedestrianAOutput implements LightCommandsInterface.Provided {
 	
 		
 		@Override
-		public boolean isRaisedDisplayRed() {
-			return pedestrian.getLightCommands().isRaisedDisplayRed();
-		}
-		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrian.getLightCommands().isRaisedDisplayYellow();
-		}
-		@Override
 		public boolean isRaisedDisplayGreen() {
-			return pedestrian.getLightCommands().isRaisedDisplayGreen();
+			return pedestrianA.getLightCommands().isRaisedDisplayGreen();
 		}
 		@Override
 		public boolean isRaisedDisplayNone() {
-			return pedestrian.getLightCommands().isRaisedDisplayNone();
+			return pedestrianA.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayRed() {
+			return pedestrianA.getLightCommands().isRaisedDisplayRed();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianA.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
 		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
-			pedestrian.getLightCommands().registerListener(listener);
+			pedestrianA.getLightCommands().registerListener(listener);
 		}
 		
 		@Override
 		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
-			return pedestrian.getLightCommands().getRegisteredListeners();
+			return pedestrianA.getLightCommands().getRegisteredListeners();
 		}
 		
 	}
 	
 	@Override
-	public PedestrianOutput getPedestrianOutput() {
-		return pedestrianOutput;
+	public PedestrianAOutput getPedestrianAOutput() {
+		return pedestrianAOutput;
+	}
+	
+	public class PriorityBOutput implements LightCommandsInterface.Provided {
+	
+		
+		@Override
+		public boolean isRaisedDisplayGreen() {
+			return priorB.getLightCommands().isRaisedDisplayGreen();
+		}
+		@Override
+		public boolean isRaisedDisplayNone() {
+			return priorB.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayRed() {
+			return priorB.getLightCommands().isRaisedDisplayRed();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return priorB.getLightCommands().isRaisedDisplayYellow();
+		}
+		
+		@Override
+		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
+			priorB.getLightCommands().registerListener(listener);
+		}
+		
+		@Override
+		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
+			return priorB.getLightCommands().getRegisteredListeners();
+		}
+		
+	}
+	
+	@Override
+	public PriorityBOutput getPriorityBOutput() {
+		return priorityBOutput;
+	}
+	
+	public class SecondaryBOutput implements LightCommandsInterface.Provided {
+	
+		
+		@Override
+		public boolean isRaisedDisplayGreen() {
+			return secondaryB.getLightCommands().isRaisedDisplayGreen();
+		}
+		@Override
+		public boolean isRaisedDisplayNone() {
+			return secondaryB.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayRed() {
+			return secondaryB.getLightCommands().isRaisedDisplayRed();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return secondaryB.getLightCommands().isRaisedDisplayYellow();
+		}
+		
+		@Override
+		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
+			secondaryB.getLightCommands().registerListener(listener);
+		}
+		
+		@Override
+		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
+			return secondaryB.getLightCommands().getRegisteredListeners();
+		}
+		
+	}
+	
+	@Override
+	public SecondaryBOutput getSecondaryBOutput() {
+		return secondaryBOutput;
+	}
+	
+	public class PedestrianBOutput implements LightCommandsInterface.Provided {
+	
+		
+		@Override
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianB.getLightCommands().isRaisedDisplayGreen();
+		}
+		@Override
+		public boolean isRaisedDisplayNone() {
+			return pedestrianB.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayRed() {
+			return pedestrianB.getLightCommands().isRaisedDisplayRed();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianB.getLightCommands().isRaisedDisplayYellow();
+		}
+		
+		@Override
+		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
+			pedestrianB.getLightCommands().registerListener(listener);
+		}
+		
+		@Override
+		public List<LightCommandsInterface.Listener.Provided> getRegisteredListeners() {
+			return pedestrianB.getLightCommands().getRegisteredListeners();
+		}
+		
+	}
+	
+	@Override
+	public PedestrianBOutput getPedestrianBOutput() {
+		return pedestrianBOutput;
 	}
 	
 	/** Starts the running of the asynchronous component. */
 	public void start() {
 		controller.start();
-		prior.start();
-		secondary.start();
-		pedestrian.start();
+		priorA.start();
+		secondaryA.start();
+		pedestrianA.start();
+		priorB.start();
+		secondaryB.start();
+		pedestrianB.start();
 		monitor.start();
 	}
 	
 	public boolean isWaiting() {
-		return controller.isWaiting() && prior.isWaiting() && secondary.isWaiting() && pedestrian.isWaiting() && monitor.isWaiting();
+		return controller.isWaiting() && priorA.isWaiting() && secondaryA.isWaiting() && pedestrianA.isWaiting() && priorB.isWaiting() && secondaryB.isWaiting() && pedestrianB.isWaiting() && monitor.isWaiting();
 	}
 	
 	/** Setter for the timer e.g., a virtual timer. */
 	public void setTimer(ITimer timer) {
 		controller.setTimer(timer);
-		prior.setTimer(timer);
-		secondary.setTimer(timer);
+		priorA.setTimer(timer);
+		secondaryA.setTimer(timer);
+		pedestrianA.setTimer(timer);
+		priorB.setTimer(timer);
+		secondaryB.setTimer(timer);
+		pedestrianB.setTimer(timer);
 	}
 	
 	/**  Getter for component instances, e.g. enabling to check their states. */
@@ -237,16 +370,28 @@ public class Crossroad implements CrossroadInterface {
 		return controller;
 	}
 	
-	public TrafficLightWrapper getPrior() {
-		return prior;
+	public TrafficLightWrapper getPriorA() {
+		return priorA;
 	}
 	
-	public TrafficLightWrapper getSecondary() {
-		return secondary;
+	public TrafficLightWrapper getSecondaryA() {
+		return secondaryA;
 	}
 	
-	public PedestrianLightWrapper getPedestrian() {
-		return pedestrian;
+	public PedestrianLightWrapper getPedestrianA() {
+		return pedestrianA;
+	}
+	
+	public TrafficLightWrapper getPriorB() {
+		return priorB;
+	}
+	
+	public TrafficLightWrapper getSecondaryB() {
+		return secondaryB;
+	}
+	
+	public PedestrianLightWrapper getPedestrianB() {
+		return pedestrianB;
 	}
 	
 	public MonitorWrapper getMonitor() {

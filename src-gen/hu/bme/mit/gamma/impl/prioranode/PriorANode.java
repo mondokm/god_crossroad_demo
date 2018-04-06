@@ -8,10 +8,10 @@ import org.yakindu.scr.ITimer;
 
 import hu.bme.mit.gamma.impl.interfaces.*;
 import hu.bme.mit.gamma.impl.channels.*;
-import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
-import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
-import hu.bme.mit.gamma.impl.controllerwrapper.*;
 import hu.bme.mit.gamma.impl.monitorwrapper.*;
+import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
+import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
+import hu.bme.mit.gamma.impl.controllerwrapper.*;
 
 public class PriorANode  {			
 	// Component instances
@@ -20,8 +20,8 @@ public class PriorANode  {
 	private PriorityAOutput priorityAOutput = new PriorityAOutput();
 	// Inner channel instances
 	// Outer channel topics
-	private Topics priorityControlOfController;			
 	private Topics priorityPoliceOfController;			
+	private Topics priorityControlOfController;			
 	
 	public PriorANode() {
 		init();
@@ -38,10 +38,10 @@ public class PriorANode  {
 		// Registration of simple channels
 		// Registration of broadcast channels
 		// Instantiation of topics
-		priorityControlOfController = new Topics("crossroad","priorityControlOfController");
-		priorityControlOfController.addSubscriptionListener(new PriorityControlOfControllerListener());
 		priorityPoliceOfController = new Topics("crossroad","priorityPoliceOfController");
 		priorityPoliceOfController.addSubscriptionListener(new PriorityPoliceOfControllerListener());
+		priorityControlOfController = new Topics("crossroad","priorityControlOfController");
+		priorityControlOfController.addSubscriptionListener(new PriorityControlOfControllerListener());
 		reset();
 	}
 	
@@ -50,20 +50,20 @@ public class PriorANode  {
 	
 		
 		@Override
-		public boolean isRaisedDisplayNone() {
-			return priorA.getLightCommands().isRaisedDisplayNone();
+		public boolean isRaisedDisplayGreen() {
+			return priorA.getLightCommands().isRaisedDisplayGreen();
 		}
 		@Override
 		public boolean isRaisedDisplayYellow() {
 			return priorA.getLightCommands().isRaisedDisplayYellow();
 		}
 		@Override
-		public boolean isRaisedDisplayRed() {
-			return priorA.getLightCommands().isRaisedDisplayRed();
+		public boolean isRaisedDisplayNone() {
+			return priorA.getLightCommands().isRaisedDisplayNone();
 		}
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return priorA.getLightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayRed() {
+			return priorA.getLightCommands().isRaisedDisplayRed();
 		}
 		
 		@Override
@@ -85,20 +85,20 @@ public class PriorANode  {
 	// Inner classes for publishing events
 	
 	// Inner classes for receiving events
-	class PriorityControlOfControllerListener implements SubscriptionListener{
-		public void gotMessage(String topic, String event, String params){
-			switch(event){
-				case "toggle": priorA.getControl().raiseToggle();
-						break;
-			}
-		}	
-	}	
 	class PriorityPoliceOfControllerListener implements SubscriptionListener{
 		public void gotMessage(String topic, String event, String params){
 			switch(event){
 				case "reset": priorA.getPoliceInterrupt().raiseReset();
 						break;
 				case "police": priorA.getPoliceInterrupt().raisePolice();
+						break;
+			}
+		}	
+	}	
+	class PriorityControlOfControllerListener implements SubscriptionListener{
+		public void gotMessage(String topic, String event, String params){
+			switch(event){
+				case "toggle": priorA.getControl().raiseToggle();
 						break;
 			}
 		}	
@@ -121,8 +121,8 @@ public class PriorANode  {
 	
 	// Method for closing the topics
 	public void closeTopics(){
-		priorityControlOfController.closeTopic();
 		priorityPoliceOfController.closeTopic();
+		priorityControlOfController.closeTopic();
 	}
 	
 }

@@ -5,10 +5,13 @@ import hu.bme.mit.gamma.impl.interfaces.PoliceInterruptInterface;
 
 public interface CrossroadInterface {
 	
-	LightCommandsInterface.Provided getPedestrianOutput();
+	LightCommandsInterface.Provided getPedestrianBOutput();
+	LightCommandsInterface.Provided getSecondaryAOutput();
+	LightCommandsInterface.Provided getPedestrianAOutput();
+	LightCommandsInterface.Provided getPriorityAOutput();
+	LightCommandsInterface.Provided getSecondaryBOutput();
 	PoliceInterruptInterface.Required getPolice();
-	LightCommandsInterface.Provided getPriorityOutput();
-	LightCommandsInterface.Provided getSecondaryOutput();
+	LightCommandsInterface.Provided getPriorityBOutput();
 	
 	
 } 

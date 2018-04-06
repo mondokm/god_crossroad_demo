@@ -136,8 +136,6 @@ public class TrafficLightCtrlStatemachine implements ITrafficLightCtrlStatemachi
 	private ITimer timer;
 	
 	private final boolean[] timeEvents = new boolean[2];
-	
-	
 	public TrafficLightCtrlStatemachine() {
 		sCILightCommands = new SCILightCommandsImpl();
 		sCIPoliceInterrupt = new SCIPoliceInterruptImpl();
@@ -149,7 +147,6 @@ public class TrafficLightCtrlStatemachine implements ITrafficLightCtrlStatemachi
 		if (timer == null) {
 			throw new IllegalStateException("timer not set.");
 		}
-		
 		for (int i = 0; i < 1; i++) {
 			stateVector[i] = State.$NullState$;
 		}
@@ -168,7 +165,6 @@ public class TrafficLightCtrlStatemachine implements ITrafficLightCtrlStatemachi
 		if (timer == null) {
 			throw new IllegalStateException("timer not set.");
 		}
-	
 		enterSequence_main_region_default();
 	}
 	
