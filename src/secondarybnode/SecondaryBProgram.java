@@ -9,6 +9,8 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
+import controllernode.Start;
+import hu.bme.mit.ftsrg.monitoring.client.*;
 public class SecondaryBProgram {
 
 	SecondaryBNode node;
@@ -22,6 +24,8 @@ public class SecondaryBProgram {
 	}
 	
 	public void run() {
+		Start client = new Start("SecondaryBNode");
+		client.run();
 		gpio = GpioFactory.getInstance();
 		greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_07, "MyLED", PinState.HIGH);
 		yellowPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_09, "MyLED", PinState.HIGH);

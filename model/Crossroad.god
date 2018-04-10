@@ -1,37 +1,30 @@
 import crossroad
+[
+	
+]
 node ControllerNode running controller
 [
-	platform amd64_linux
+	platform armv8_linux
 	main_class "controllernode.ControllerProgram"
 ]
-node PriorANode running priorA
+node PriorANode running priorA, pedestrianB
 [
-	platform armv7_linux
-	main_class "prioranode.PriorityAProgram"
+	platform armv8_linux
+	main_class "prioranode.PriorityPedestrianAProgram"
 ]
-node SecondaryANode running secondaryA
+node SecondaryANode running secondaryA,  pedestrianA
 [
-	platform armv7_linux
-	main_class "secondaryanode.SecondaryAProgram"
-]
-node PedestrianANode running pedestrianA
-[
-	platform armv7_linux
-	main_class "pedestriananode.PedestrianAProgram"
+	platform armv8_linux
+	main_class "secondaryanode.SecondaryPedestrianAProgram"
 ]
 node PriorBNode running priorB
 [
-	platform armv7_linux
+	platform armv8_linux
 	main_class "priorbnode.PriorityBProgram"
 ]
 node SecondaryBNode running secondaryB
 [
-	platform armv7_linux
+	platform armv8_linux
 	main_class "secondarybnode.SecondaryBProgram"
-]
-node PedestrianBNode running pedestrianB
-[
-	platform armv7_linux
-	main_class "pedestrianbnode.PedestrianBProgram"
 ]
 node MonitorNode running monitor

@@ -8,10 +8,11 @@ import java.awt.event.WindowListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.xml.stream.events.StartDocument;
 
 import hu.bme.mit.gamma.impl.controllernode.ControllerNode;
 import hu.bme.mit.gamma.impl.trafficlightctrl.TrafficLightCtrlStatechart.Control;
-
+import hu.bme.mit.ftsrg.monitoring.client.*;
 public class ControllerProgram {
 
 	ControllerNode node;
@@ -26,8 +27,10 @@ public class ControllerProgram {
 	}
 	
 	public void run() {
+		Start client = new Start("ControllerNode");
+		client.run();
 		node=new ControllerNode();
-		node.start();		
+		node.start();
 		createGUI();		
 	}
 	
