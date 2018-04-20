@@ -1,0 +1,22 @@
+import Controller
+package controllerwrapper
+const QUEUE_CAPACITY : integer = 8
+async ControllerWrapper of ControllerStatechart [
+] {
+    //  Clocks
+    clock clockSignal (rate = 300 ms)
+    
+    //  Control  specifications 
+    when clockSignal / run 
+    
+    
+    // Message  queues
+    queue executionMessages(priority = 2, capacity = QUEUE_CAPACITY) {
+        clockSignal
+    }
+    
+    queue pingMessages (priority = 1 , capacity = 8) { 
+        PoliceInterrupt.any, Error.any
+    }
+    
+}

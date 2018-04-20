@@ -1,0 +1,106 @@
+# -*-Makefile-*-
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+
+CC            = gcc
+CXX           = g++
+LD            = $(CXX) $(CCFLAGS) $(PICFLAGS) $(GENFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+CCFLAGS        =  
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -D_REENTRANT -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=500 -Wall -Wno-unused-function -I"../../../../../include" -I"../../../../../include/sys" -I"../../../../../include/dcps/C++/SACPP" -I"." -I"../../../../../examples/include" -I"../../../../../examples"
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"." -L"../../../../../lib" -Wl,-rpath,\$$ORIGIN -Wl,-rpath,\$$ORIGIN/../../../../../lib
+CCC           = $(CXX)
+MAKEFILE      = Makefile.sacpp_querycondition_types
+DEPENDENCIES  = $(MAKEFILE)
+LTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -O3 -DNDEBUG
+LDLIBS        = -l"dcpssacpp" -l"ddskernel" -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
+OBJS          = .obj$(CFG)/QueryConditionDataDcps_impl$(OBJEXT) .obj$(CFG)/QueryConditionDataSplDcps$(OBJEXT) .obj$(CFG)/QueryConditionDataDcps$(OBJEXT) .obj$(CFG)/QueryConditionData$(OBJEXT)
+AREXT         = .a
+LIB           = $(LTARGETDIR)$(LIBPREFIX)sacpp_querycondition_types$(LIBSUFFIX)$(AREXT)
+SOEXT         = .so
+SHTARGETDIR   = ./
+SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)sacpp_querycondition_types$(LIBSUFFIX)$(SOEXT)
+SHFLAGS       = -shared
+SRC           = QueryConditionDataDcps_impl.cpp QueryConditionDataSplDcps.cpp QueryConditionDataDcps.cpp QueryConditionData.cpp
+LINK.cc       = $(LD) $(LDFLAGS)
+DYNAMICFLAGS  = -DOSPL_BUILDEXAMPLE_LIB
+EXPORTFLAGS   = $(DYNAMICFLAGS)
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(SHLIB)
+
+$(SHLIB): $(OBJS)
+	@$(TESTDIRSTART) "$(SHTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(SHTARGETDIR)"
+	$(LINK.cc) $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+
+$(LIB): $(OBJS)
+	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS) 
+
+GENERATED_DIRTY = QueryConditionDataDcps_impl.cpp QueryConditionDataSplDcps.cpp QueryConditionDataDcps.cpp QueryConditionData.cpp ccpp_QueryConditionData.h QueryConditionDataSplDcps.h QueryConditionData.h QueryConditionDataDcps_impl.h QueryConditionDataDcps.h
+
+export DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):../../../../../bin:../../../../../lib
+export LD_LIBRARY_PATH   := $(LD_LIBRARY_PATH):../../../../../bin:../../../../../lib
+export SHLIB_PATH        := $(SHLIB_PATH):../../../../../bin:../../../../../lib
+export LIBPATH           := $(LIBPATH):../../../../../bin:../../../../../lib
+export PATH              := $(PATH):../../../../../bin:../../../../../lib
+
+.NOTPARALLEL:
+QueryConditionDataDcps_impl.cpp QueryConditionDataSplDcps.cpp QueryConditionDataDcps.cpp QueryConditionData.cpp ccpp_QueryConditionData.h QueryConditionDataSplDcps.h QueryConditionData.h QueryConditionDataDcps_impl.h QueryConditionDataDcps.h: ../../idl/QueryConditionData.idl
+	"../../../../../bin/idlpp" -I "../../../../../etc/idl" -l cpp ../../idl/QueryConditionData.idl
+
+.PRECIOUS: $(GENERATED_DIRTY)
+$(OBJS): $(GENERATED_DIRTY)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+.obj$(CFG)/QueryConditionDataDcps_impl$(OBJEXT): QueryConditionDataDcps_impl.cpp
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) QueryConditionDataDcps_impl.cpp
+
+.obj$(CFG)/QueryConditionDataSplDcps$(OBJEXT): QueryConditionDataSplDcps.cpp
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) QueryConditionDataSplDcps.cpp
+
+.obj$(CFG)/QueryConditionDataDcps$(OBJEXT): QueryConditionDataDcps.cpp
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) QueryConditionDataDcps.cpp
+
+.obj$(CFG)/QueryConditionData$(OBJEXT): QueryConditionData.cpp
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) QueryConditionData.cpp
+
+clean:
+	-$(RM) $(OBJS)
+
+realclean: clean
+	-$(RM) $(SHLIB) $(LIB)
+	-$(RM) $(GENERATED_DIRTY)
+	-$(RM) .obj$(CFG)/
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) $(CHK_SOURCES)
+

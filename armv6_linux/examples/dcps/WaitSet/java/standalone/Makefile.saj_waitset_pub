@@ -1,0 +1,73 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+JAVAC         = $(SPLICE_JAVAC)
+JAR           = jar
+JAVACFLAGS    = $(GENFLAGS) -sourcepath ../src
+CLASSEXT      = .class
+CLASSDIR      = classes/
+OUTPUT_OPTION = -d $(CLASSDIR)
+COMPILE.java  = $(JAVAC) $(JAVACFLAGS) -cp $(JAVACCPATH) 
+JAVACCPATH    = "$(SPLICE_EXTRA_CP):saj_waitset_types.jar:$(CLASSDIR):../../../../../jar/dcpssaj.jar:"
+MAKEFILE      = Makefile.saj_waitset_pub
+DEPENDENCIES  = $(MAKEFILE)
+LTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+GENFLAGS      =  
+CLASSES       =  $(CLASSDIR)WaitSetDataPublisher$(CLASSEXT) $(CLASSDIR)DDSEntityManager$(CLASSEXT) $(CLASSDIR)ErrorHandler$(CLASSEXT)
+JARCLASSES    =  WaitSetDataPublisher$(CLASSEXT) DDSEntityManager$(CLASSEXT) ErrorHandler$(CLASSEXT)
+JAREXT        = .jar
+MAINCLASS     = WaitSetDataPublisher
+JARFILE       = $(LTARGETDIR)$(LIBPREFIX)saj_waitset_pub$(LIBSUFFIX)$(JAREXT)
+MANIFEST      = saj_waitset_pub.manifest
+JARFLAGS      = cvfm
+SRC           = ../src/WaitSetDataPublisher.java ../src/DDSEntityManager.java ../src/ErrorHandler.java
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(JARFILE)
+
+$(JARFILE): $(CLASSES) $(CLASSDIR)$(MANIFEST)
+	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
+	cd $(CLASSDIR) && $(JAR) $(JARFLAGS) $(JARFILE) $(MANIFEST) $(JARCLASSES) 
+	$(MV) $(CLASSDIR)/$(JARFILE) .
+
+$(CLASSDIR)$(MANIFEST):
+	echo Class-Path: saj_waitset_types.jar ../../../../../jar/dcpssaj.jar > $(CLASSDIR)$(MANIFEST)
+	echo Main-Class: $(MAINCLASS) >> $(CLASSDIR)$(MANIFEST)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+$(CLASSDIR)WaitSetDataPublisher$(CLASSEXT): ../src/WaitSetDataPublisher.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/WaitSetDataPublisher.java
+
+$(CLASSDIR)DDSEntityManager$(CLASSEXT): ../src/DDSEntityManager.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/DDSEntityManager.java
+
+$(CLASSDIR)ErrorHandler$(CLASSEXT): ../src/ErrorHandler.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/ErrorHandler.java
+
+clean:
+	-$(RM) $(CLASSES)
+
+realclean: clean
+	-$(RM) $(BIN)
+	-$(RM) $(CLASSDIR)$(MANIFEST)
+
+check-syntax:
+	$(COMPILE.java) $(EXPORTFLAGS) $(CHK_SOURCES)
+

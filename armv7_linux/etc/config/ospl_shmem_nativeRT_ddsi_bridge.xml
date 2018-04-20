@@ -1,0 +1,90 @@
+<OpenSplice>
+   <Domain>
+      <Name>ospl_shmem_nativeRT_ddsi_bridge</Name>
+      <Id>0</Id>
+      <Description>Federated deployment for extending an RTNetworking-based domain into a DDSI network.</Description>
+      <Database>
+         <Size>10485760</Size>
+      </Database>
+      <Service name="networking">
+         <Command>networking</Command>
+      </Service>
+      <Service name="ddsi2e">
+         <Command>ddsi2e</Command>
+      </Service>
+      <Service name="nwbridge">
+        <Command>nwbridge</Command>
+      </Service>
+      <Service name="durability">
+         <Command>durability</Command>
+      </Service>
+      <Service name="cmsoap">
+         <Command>cmsoap</Command>
+      </Service>
+   </Domain>
+   <NetworkService name="networking">
+      <Partitioning>
+         <GlobalPartition Address="broadcast"/>
+      </Partitioning>
+      <Channels>
+         <Channel default="true" enabled="true" name="BestEffort" reliable="false">
+            <PortNr>54400</PortNr>
+         </Channel>
+         <Channel enabled="true" name="Reliable" reliable="true">
+            <PortNr>54410</PortNr>
+         </Channel>
+      </Channels>
+      <Discovery enabled="true">
+         <PortNr>54420</PortNr>
+      </Discovery>
+   </NetworkService>
+   <DDSI2EService name="ddsi2e">
+      <General>
+         <NetworkInterfaceAddress>AUTO</NetworkInterfaceAddress>
+         <AllowMulticast>true</AllowMulticast>
+         <EnableMulticastLoopback>true</EnableMulticastLoopback>
+         <CoexistWithNativeNetworking>false</CoexistWithNativeNetworking>
+      </General>
+      <Compatibility>
+<!-- see the release notes and/or the OpenSplice configurator on DDSI interoperability -->
+         <StandardsConformance>lax</StandardsConformance>
+<!-- the following one is necessary only for TwinOaks CoreDX DDS compatibility -->
+<!-- <ExplicitlyPublishQosSetToDefault>true</ExplicitlyPublishQosSetToDefault> -->
+      </Compatibility>
+      <Discovery>
+        <LocalDiscoveryPartition>ThisIsNotAPartition</LocalDiscoveryPartition>
+      </Discovery>
+   </DDSI2EService>
+   <NetworkingBridgeService name="nwbridge">
+     <Include>
+       <Entry DCPSPartitionTopic="*.*"/>
+     </Include>
+   </NetworkingBridgeService>
+   <DurabilityService name="durability">
+      <ClientDurability enabled="true"/>
+      <Network>
+         <Alignment>
+            <TimeAlignment>FALSE</TimeAlignment>
+            <RequestCombinePeriod>
+               <Initial>2.5</Initial>
+               <Operational>0.1</Operational>
+            </RequestCombinePeriod>
+         </Alignment>
+         <WaitForAttachment maxWaitCount="100">
+           <ServiceName>networking</ServiceName>
+           <ServiceName>ddsi2e</ServiceName>
+         </WaitForAttachment>
+      </Network>
+      <NameSpaces>
+         <NameSpace name="defaultNamespace">
+            <Partition>*</Partition>
+         </NameSpace>
+         <Policy nameSpace="defaultNamespace" durability="Durable" alignee="Initial" aligner="True"/>
+      </NameSpaces>
+   </DurabilityService>
+   <TunerService name="cmsoap">
+      <Server>
+         <PortNr>50000</PortNr>
+      </Server>
+   </TunerService>
+</OpenSplice>
