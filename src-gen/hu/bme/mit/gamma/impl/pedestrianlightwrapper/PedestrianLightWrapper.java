@@ -81,8 +81,8 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 		
 		
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -91,13 +91,13 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 		}
 		
 		@Override
-		public boolean isRaisedDisplayRed() {
-			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayRed();
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayGreen();
 		}
 		
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayYellow();
+		public boolean isRaisedDisplayRed() {
+			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayRed();
 		}
 		
 		@Override
@@ -120,12 +120,12 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 	public class PoliceInterrupt implements PoliceInterruptInterface.Required {
 		
 		@Override
-		public void raiseReset() {
-			pingMessages.offer(new Event("PoliceInterrupt.reset", null));
-		}
-		@Override
 		public void raisePolice() {
 			pingMessages.offer(new Event("PoliceInterrupt.police", null));
+		}
+		@Override
+		public void raiseReset() {
+			pingMessages.offer(new Event("PoliceInterrupt.reset", null));
 		}
 		
 		
@@ -196,11 +196,11 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 	
 	private void forwardEvent(Event event) {
 		switch (event.getEvent()) {
-			case "PoliceInterrupt.reset":
-				pedestrianLightStatechart.getPoliceInterrupt().raiseReset();
-			break;
 			case "PoliceInterrupt.police":
 				pedestrianLightStatechart.getPoliceInterrupt().raisePolice();
+			break;
+			case "PoliceInterrupt.reset":
+				pedestrianLightStatechart.getPoliceInterrupt().raiseReset();
 			break;
 			case "Control.toggle":
 				pedestrianLightStatechart.getControl().raiseToggle();

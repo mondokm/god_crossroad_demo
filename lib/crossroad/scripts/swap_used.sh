@@ -26,10 +26,10 @@ RET=$(free | grep Swap | awk '{print $3}')
 
 if [ "$RET" -gt "$MAX" ]
 then
-    echo "ERROR! " $MAXERR
+    echo "ERROR! " $MAXERR $RET
 elif [ "$MIN" -gt "$RET" ]
 then
-    echo "ERROR! " $MINERR
+    echo "ERROR! " $MINERR $RET
 else
     echo $RET
 fi

@@ -5,8 +5,8 @@
 # MAKE SURE ALL ARE LINKED TO $PATH
 ########################################################################
 
-./cpu_model.sh
-./kernel_name.sh
-./ram_total.sh
-./swap_total.sh
-./no_cores.sh
+../lib/scripts/cpu_model.sh
+../lib/scripts/kernel_name.sh
+../lib/scripts/ram_total.sh
+../lib/scripts/swap_total.sh
+../lib/scripts/no_cores.sh

@@ -1,3 +1,0 @@
-statechart Monitor mappings{
-	map ErrorOut=Error as provided
-}

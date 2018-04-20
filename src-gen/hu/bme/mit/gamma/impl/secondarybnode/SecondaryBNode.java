@@ -1,7 +1,7 @@
 package hu.bme.mit.gamma.impl.secondarybnode;
 
-import hu.bme.mit.gamma.ddslib.model.*;
-import hu.bme.mit.gamma.ddslib.opensplice.*;
+import hu.bme.mit.ftsrg.ddslib.model.*;
+import hu.bme.mit.ftsrg.ddslib.opensplice.*;
 
 import java.util.List;
 import org.yakindu.scr.ITimer;
@@ -9,9 +9,9 @@ import org.yakindu.scr.ITimer;
 import hu.bme.mit.gamma.impl.interfaces.*;
 import hu.bme.mit.gamma.impl.channels.*;
 import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
+import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
 import hu.bme.mit.gamma.impl.monitorwrapper.*;
 import hu.bme.mit.gamma.impl.controllerwrapper.*;
-import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
 
 public class SecondaryBNode  {			
 	// Component instances
@@ -54,16 +54,16 @@ public class SecondaryBNode  {
 			return secondaryB.getLightCommands().isRaisedDisplayYellow();
 		}
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return secondaryB.getLightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayNone() {
+			return secondaryB.getLightCommands().isRaisedDisplayNone();
 		}
 		@Override
 		public boolean isRaisedDisplayRed() {
 			return secondaryB.getLightCommands().isRaisedDisplayRed();
 		}
 		@Override
-		public boolean isRaisedDisplayNone() {
-			return secondaryB.getLightCommands().isRaisedDisplayNone();
+		public boolean isRaisedDisplayGreen() {
+			return secondaryB.getLightCommands().isRaisedDisplayGreen();
 		}
 		
 		@Override

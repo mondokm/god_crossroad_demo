@@ -1,6 +1,9 @@
 import crossroad
 [
-	
+	server "152.66.159.78"
+	database ""
+	username "milan"
+	password "0311"
 ]
 node ControllerNode running controller
 [
