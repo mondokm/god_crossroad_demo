@@ -1,6 +1,0 @@
-#include "Vortex/FACE/Connection.hpp"
-#include "Vortex/FACE/ConnectionFactory.hpp"
-#include "Vortex/FACE/ReportSupport.hpp"
-
-#include "$(basename)_DCPS.hpp"
-#include "$(basename)_FACE.hpp"
