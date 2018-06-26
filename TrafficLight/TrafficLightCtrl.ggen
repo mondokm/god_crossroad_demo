@@ -1,0 +1,5 @@
+statechart TrafficLightCtrl mappings {
+	map Control = Control as required
+	map PoliceInterrupt = PoliceInterrupt as required
+	map LightCommands = LightCommands as provided
+}

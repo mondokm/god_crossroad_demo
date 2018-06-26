@@ -111,13 +111,13 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 		
 		
 		@Override
-		public boolean isRaisedPolice() {
-			return controllerStatechart.getPriorityPolice().isRaisedPolice();
+		public boolean isRaisedReset() {
+			return controllerStatechart.getPriorityPolice().isRaisedReset();
 		}
 		
 		@Override
-		public boolean isRaisedReset() {
-			return controllerStatechart.getPriorityPolice().isRaisedReset();
+		public boolean isRaisedPolice() {
+			return controllerStatechart.getPriorityPolice().isRaisedPolice();
 		}
 		
 		@Override
@@ -191,13 +191,13 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 		
 		
 		@Override
-		public boolean isRaisedPolice() {
-			return controllerStatechart.getSecondaryPolice().isRaisedPolice();
+		public boolean isRaisedReset() {
+			return controllerStatechart.getSecondaryPolice().isRaisedReset();
 		}
 		
 		@Override
-		public boolean isRaisedReset() {
-			return controllerStatechart.getSecondaryPolice().isRaisedReset();
+		public boolean isRaisedPolice() {
+			return controllerStatechart.getSecondaryPolice().isRaisedPolice();
 		}
 		
 		@Override
@@ -220,12 +220,12 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 	public class PoliceInterrupt implements PoliceInterruptInterface.Required {
 		
 		@Override
-		public void raisePolice() {
-			pingMessages.offer(new Event("PoliceInterrupt.police", null));
-		}
-		@Override
 		public void raiseReset() {
 			pingMessages.offer(new Event("PoliceInterrupt.reset", null));
+		}
+		@Override
+		public void raisePolice() {
+			pingMessages.offer(new Event("PoliceInterrupt.police", null));
 		}
 		
 		
@@ -250,13 +250,13 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 		
 		
 		@Override
-		public boolean isRaisedPolice() {
-			return controllerStatechart.getPedestrianPolice().isRaisedPolice();
+		public boolean isRaisedReset() {
+			return controllerStatechart.getPedestrianPolice().isRaisedReset();
 		}
 		
 		@Override
-		public boolean isRaisedReset() {
-			return controllerStatechart.getPedestrianPolice().isRaisedReset();
+		public boolean isRaisedPolice() {
+			return controllerStatechart.getPedestrianPolice().isRaisedPolice();
 		}
 		
 		@Override
@@ -329,11 +329,11 @@ public class ControllerWrapper implements Runnable, ControllerWrapperInterface {
 			case "Error.healthError":
 				controllerStatechart.getError().raiseHealthError();
 			break;
-			case "PoliceInterrupt.police":
-				controllerStatechart.getPoliceInterrupt().raisePolice();
-			break;
 			case "PoliceInterrupt.reset":
 				controllerStatechart.getPoliceInterrupt().raiseReset();
+			break;
+			case "PoliceInterrupt.police":
+				controllerStatechart.getPoliceInterrupt().raisePolice();
 			break;
 			default:
 				throw new IllegalArgumentException("No such event!");

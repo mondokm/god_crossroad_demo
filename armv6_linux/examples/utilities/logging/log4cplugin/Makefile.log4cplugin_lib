@@ -1,0 +1,78 @@
+# -*-Makefile-*-
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+
+CC            = gcc
+CXX           = g++
+LD            = $(CXX) $(CCFLAGS) $(PICFLAGS) $(GENFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+CCFLAGS        =  
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -D_REENTRANT -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=500 -Wall -Wno-unused-function -I"../../../../include" -I"../../../../include/sys" -I"." -I"../../../../examples/include" -I"../../../../examples" -I"../log4c-1.2.1/src"
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"." -L"../../../../lib" -L"../lib" -Wl,-rpath,\$$ORIGIN -Wl,-rpath,\$$ORIGIN/../../../../lib
+CCC           = $(CXX)
+MAKEFILE      = Makefile.log4cplugin_lib
+DEPENDENCIES  = $(MAKEFILE)
+LTARGETDIR    = ../lib/
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -O3 -DNDEBUG
+LDLIBS        = -l"log4c" -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
+OBJS          = .obj$(CFG)/log4cpluginlib$(OBJEXT)
+AREXT         = .a
+LIB           = $(LTARGETDIR)$(LIBPREFIX)log4cplugin_lib$(LIBSUFFIX)$(AREXT)
+SOEXT         = .so
+SHTARGETDIR   = ../lib/
+SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)log4cplugin_lib$(LIBSUFFIX)$(SOEXT)
+SHFLAGS       = -shared
+SRC           = log4cpluginlib.c
+LINK.cc       = $(LD) $(LDFLAGS)
+DYNAMICFLAGS  = -DLOG4CPLUGIN_BUILD_DLL
+EXPORTFLAGS   = $(DYNAMICFLAGS)
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(SHLIB)
+
+$(SHLIB): $(OBJS)
+	@$(TESTDIRSTART) "$(SHTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(SHTARGETDIR)"
+	$(LINK.cc) $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+
+$(LIB): $(OBJS)
+	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS) 
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+.obj$(CFG)/log4cpluginlib$(OBJEXT): log4cpluginlib.c
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4cpluginlib.c
+
+clean:
+	-$(RM) $(OBJS)
+
+realclean: clean
+	-$(RM) $(SHLIB) $(LIB)
+	-$(RM) .obj$(CFG)/
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) $(CHK_SOURCES)
+

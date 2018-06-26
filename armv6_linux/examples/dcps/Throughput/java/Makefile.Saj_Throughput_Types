@@ -1,0 +1,106 @@
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+JAVAC         = $(SPLICE_JAVAC)
+JAR           = jar
+JAVACFLAGS    = $(GENFLAGS)
+CLASSEXT      = .class
+CLASSDIR      = classes/
+OUTPUT_OPTION = -d $(CLASSDIR)
+COMPILE.java  = $(JAVAC) $(JAVACFLAGS) -cp $(JAVACCPATH) 
+JAVACCPATH    = "$(SPLICE_EXTRA_CP):$(CLASSDIR):../../../../jar/dcpssaj.jar:"
+MAKEFILE      = Makefile.Saj_Throughput_Types
+DEPENDENCIES  = $(MAKEFILE)
+LTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+GENFLAGS      =  
+CLASSES       =  $(CLASSDIR)./ThroughputModule/*$(CLASSEXT) $(CLASSDIR)Subscriber_impl$(CLASSEXT) $(CLASSDIR)ExampleUtilities$(CLASSEXT) $(CLASSDIR)ExampleError$(CLASSEXT) $(CLASSDIR)subscriber$(CLASSEXT) $(CLASSDIR)Publisher_impl$(CLASSEXT) $(CLASSDIR)publisher$(CLASSEXT) $(CLASSDIR)SubEntities$(CLASSEXT) $(CLASSDIR)PubEntities$(CLASSEXT)
+JARCLASSES    =  ./ThroughputModule/*$(CLASSEXT) Subscriber_impl$(CLASSEXT) ExampleUtilities$(CLASSEXT) ExampleError$(CLASSEXT) subscriber$(CLASSEXT) Publisher_impl$(CLASSEXT) publisher$(CLASSEXT) SubEntities$(CLASSEXT) PubEntities$(CLASSEXT)
+JAREXT        = .jar
+MAINCLASS     = subscriber
+JARFILE       = $(LTARGETDIR)$(LIBPREFIX)Saj_Throughput_Types$(LIBSUFFIX)$(JAREXT)
+MANIFEST      = Saj_Throughput_Types.manifest
+JARFLAGS      = cvfm
+SRC           = ./ThroughputModule/*.java Subscriber_impl.java ExampleUtilities.java ExampleError.java subscriber.java Publisher_impl.java publisher.java SubEntities.java PubEntities.java
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(JARFILE)
+
+$(JARFILE): $(CLASSES) $(CLASSDIR)$(MANIFEST)
+	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
+	cd $(CLASSDIR) && $(JAR) $(JARFLAGS) $(JARFILE) $(MANIFEST) $(JARCLASSES) 
+	$(MV) $(CLASSDIR)/$(JARFILE) .
+
+$(CLASSDIR)$(MANIFEST):
+	echo Class-Path: ../../../../jar/dcpssaj.jar > $(CLASSDIR)$(MANIFEST)
+	echo Main-Class: $(MAINCLASS) >> $(CLASSDIR)$(MANIFEST)
+
+GENERATED_DIRTY = ./ThroughputModule
+
+./ThroughputModule: ../idl/Throughput.idl
+	"../../../../bin/idlpp" -I "../../../../etc/idl" -l java ../idl/Throughput.idl
+
+.PRECIOUS: $(GENERATED_DIRTY)
+$(CLASSES): $(GENERATED_DIRTY)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+$(CLASSDIR)./ThroughputModule/*$(CLASSEXT): ./ThroughputModule
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ./ThroughputModule/*.java
+
+$(CLASSDIR)Subscriber_impl$(CLASSEXT): Subscriber_impl.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) Subscriber_impl.java
+
+$(CLASSDIR)ExampleUtilities$(CLASSEXT): ExampleUtilities.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ExampleUtilities.java
+
+$(CLASSDIR)ExampleError$(CLASSEXT): ExampleError.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) ExampleError.java
+
+$(CLASSDIR)subscriber$(CLASSEXT): subscriber.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) subscriber.java
+
+$(CLASSDIR)Publisher_impl$(CLASSEXT): Publisher_impl.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) Publisher_impl.java
+
+$(CLASSDIR)publisher$(CLASSEXT): publisher.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) publisher.java
+
+$(CLASSDIR)SubEntities$(CLASSEXT): SubEntities.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) SubEntities.java
+
+$(CLASSDIR)PubEntities$(CLASSEXT): PubEntities.java
+	@$(TESTDIRSTART) "$(CLASSDIR)" $(TESTDIREND) $(MKDIR) "$(CLASSDIR)"
+	$(COMPILE.java) $(EXPORTFLAGS) $(OUTPUT_OPTION) PubEntities.java
+
+clean:
+	-$(RM) $(CLASSES)
+
+realclean: clean
+	-$(RM) $(BIN)
+	-$(RM) $(GENERATED_DIRTY)
+	-$(RM) $(CLASSDIR)$(MANIFEST)
+
+check-syntax:
+	$(COMPILE.java) $(EXPORTFLAGS) $(CHK_SOURCES)
+

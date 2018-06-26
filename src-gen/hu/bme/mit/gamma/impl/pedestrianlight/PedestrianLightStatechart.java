@@ -91,11 +91,11 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 		while (!eventQueue.isEmpty()) {
 				Event event = eventQueue.remove();
 				switch (event.getEvent()) {
-					case "PoliceInterrupt.Police": 
-						pedestrianLightStatemachine.getSCIPoliceInterrupt().raisePolice();
-					break;
 					case "PoliceInterrupt.Reset": 
 						pedestrianLightStatemachine.getSCIPoliceInterrupt().raiseReset();
+					break;
+					case "PoliceInterrupt.Police": 
+						pedestrianLightStatemachine.getSCIPoliceInterrupt().raisePolice();
 					break;
 					case "Control.Toggle": 
 						pedestrianLightStatemachine.getSCIControl().raiseToggle();
@@ -113,28 +113,28 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 
 
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayYellow();
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayGreen();
 		}
 		@Override
 		public boolean isRaisedDisplayNone() {
 			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayNone();
 		}
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayGreen();
-		}
-		@Override
 		public boolean isRaisedDisplayRed() {
 			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayRed();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayYellow();
 		}
 		@Override
 		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
 			registeredListeners.add(listener);
 			pedestrianLightStatemachine.getSCILightCommands().getListeners().add(new SCILightCommandsListener() {
 				@Override
-				public void onDisplayYellowRaised() {
-					listener.raiseDisplayYellow();
+				public void onDisplayGreenRaised() {
+					listener.raiseDisplayGreen();
 				}
 				
 				@Override
@@ -143,13 +143,13 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 				}
 				
 				@Override
-				public void onDisplayGreenRaised() {
-					listener.raiseDisplayGreen();
+				public void onDisplayRedRaised() {
+					listener.raiseDisplayRed();
 				}
 				
 				@Override
-				public void onDisplayRedRaised() {
-					listener.raiseDisplayRed();
+				public void onDisplayYellowRaised() {
+					listener.raiseDisplayYellow();
 				}
 			});
 		}
@@ -170,13 +170,13 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 		private List<PoliceInterruptInterface.Listener.Required> registeredListeners = new LinkedList<PoliceInterruptInterface.Listener.Required>();
 
 		@Override
-		public void raisePolice() {
-			getInsertQueue().add(new Event("PoliceInterrupt.Police", null));
+		public void raiseReset() {
+			getInsertQueue().add(new Event("PoliceInterrupt.Reset", null));
 		}
 		
 		@Override
-		public void raiseReset() {
-			getInsertQueue().add(new Event("PoliceInterrupt.Reset", null));
+		public void raisePolice() {
+			getInsertQueue().add(new Event("PoliceInterrupt.Police", null));
 		}
 
 		@Override

@@ -1,0 +1,177 @@
+# -*-Makefile-*-
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+
+CC            = gcc
+CXX           = g++
+LD            = $(CXX) $(CCFLAGS) $(PICFLAGS) $(GENFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+CCFLAGS        =  
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -D_REENTRANT -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=500 -Wall -Wno-unused-function -I"./log4c-1.2.1/src" -I"./log4c-1.2.1/src/log4c" -I"./log4c-1.2.1/src/sd" -DHAVE_CONFIG_H -DYY_NO_INPUT -D_BSD_SOURCE
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"."
+CCC           = $(CXX)
+MAKEFILE      = Makefile.log4c
+DEPENDENCIES  = .depend.$(MAKEFILE)
+LTARGETDIR    = ./lib/
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -O3 -DNDEBUG
+LDLIBS        = -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
+OBJS          = log4c-1.2.1/src/log4c/appender_type_mmap$(OBJEXT) log4c-1.2.1/src/log4c/logging_event$(OBJEXT) log4c-1.2.1/src/log4c/rc$(OBJEXT) log4c-1.2.1/src/log4c/rollingpolicy$(OBJEXT) log4c-1.2.1/src/log4c/category$(OBJEXT) log4c-1.2.1/src/log4c/version$(OBJEXT) log4c-1.2.1/src/log4c/layout_type_basic_r$(OBJEXT) log4c-1.2.1/src/log4c/appender$(OBJEXT) log4c-1.2.1/src/log4c/layout_type_dated_r$(OBJEXT) log4c-1.2.1/src/log4c/init$(OBJEXT) log4c-1.2.1/src/log4c/layout$(OBJEXT) log4c-1.2.1/src/log4c/appender_type_stream2$(OBJEXT) log4c-1.2.1/src/log4c/layout_type_basic$(OBJEXT) log4c-1.2.1/src/log4c/layout_type_dated$(OBJEXT) log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin$(OBJEXT) log4c-1.2.1/src/log4c/priority$(OBJEXT) log4c-1.2.1/src/log4c/appender_type_rollingfile$(OBJEXT) log4c-1.2.1/src/log4c/appender_type_stream$(OBJEXT) log4c-1.2.1/src/log4c/appender_type_syslog$(OBJEXT) log4c-1.2.1/src/sd/domnode-xml-parser$(OBJEXT) log4c-1.2.1/src/sd/domnode-xml-scanner$(OBJEXT) log4c-1.2.1/src/sd/domnode-xml$(OBJEXT) log4c-1.2.1/src/sd/domnode$(OBJEXT) log4c-1.2.1/src/sd/error$(OBJEXT) log4c-1.2.1/src/sd/factory$(OBJEXT) log4c-1.2.1/src/sd/hash$(OBJEXT) log4c-1.2.1/src/sd/list$(OBJEXT) log4c-1.2.1/src/sd/malloc$(OBJEXT) log4c-1.2.1/src/sd/sd_xplatform$(OBJEXT) log4c-1.2.1/src/sd/sprintf$(OBJEXT) log4c-1.2.1/src/sd/stack$(OBJEXT)
+AREXT         = .a
+LIB           = $(LTARGETDIR)$(LIBPREFIX)log4c$(LIBSUFFIX)$(AREXT)
+SOEXT         = .so
+SHTARGETDIR   = ./lib/
+SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)log4c$(LIBSUFFIX)$(SOEXT)
+SHFLAGS       = -shared
+SRC           = log4c-1.2.1/src/log4c/appender_type_mmap.c log4c-1.2.1/src/log4c/logging_event.c log4c-1.2.1/src/log4c/rc.c log4c-1.2.1/src/log4c/rollingpolicy.c log4c-1.2.1/src/log4c/category.c log4c-1.2.1/src/log4c/version.c log4c-1.2.1/src/log4c/layout_type_basic_r.c log4c-1.2.1/src/log4c/appender.c log4c-1.2.1/src/log4c/layout_type_dated_r.c log4c-1.2.1/src/log4c/init.c log4c-1.2.1/src/log4c/layout.c log4c-1.2.1/src/log4c/appender_type_stream2.c log4c-1.2.1/src/log4c/layout_type_basic.c log4c-1.2.1/src/log4c/layout_type_dated.c log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin.c log4c-1.2.1/src/log4c/priority.c log4c-1.2.1/src/log4c/appender_type_rollingfile.c log4c-1.2.1/src/log4c/appender_type_stream.c log4c-1.2.1/src/log4c/appender_type_syslog.c log4c-1.2.1/src/sd/domnode-xml-parser.c log4c-1.2.1/src/sd/domnode-xml-scanner.c log4c-1.2.1/src/sd/domnode-xml.c log4c-1.2.1/src/sd/domnode.c log4c-1.2.1/src/sd/error.c log4c-1.2.1/src/sd/factory.c log4c-1.2.1/src/sd/hash.c log4c-1.2.1/src/sd/list.c log4c-1.2.1/src/sd/malloc.c log4c-1.2.1/src/sd/sd_xplatform.c log4c-1.2.1/src/sd/sprintf.c log4c-1.2.1/src/sd/stack.c
+LINK.cc       = $(LD) $(LDFLAGS)
+DYNAMICFLAGS  = -DLOG4C_EXPORTS
+EXPORTFLAGS   = $(DYNAMICFLAGS)
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(SHLIB)
+
+$(SHLIB): $(OBJS)
+	@$(TESTDIRSTART) "$(SHTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(SHTARGETDIR)"
+	$(LINK.cc) $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+
+$(LIB): $(OBJS)
+	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS) 
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+log4c-1.2.1/src/log4c/appender_type_mmap$(OBJEXT): log4c-1.2.1/src/log4c/appender_type_mmap.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/appender_type_mmap.c
+
+log4c-1.2.1/src/log4c/logging_event$(OBJEXT): log4c-1.2.1/src/log4c/logging_event.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/logging_event.c
+
+log4c-1.2.1/src/log4c/rc$(OBJEXT): log4c-1.2.1/src/log4c/rc.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/rc.c
+
+log4c-1.2.1/src/log4c/rollingpolicy$(OBJEXT): log4c-1.2.1/src/log4c/rollingpolicy.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/rollingpolicy.c
+
+log4c-1.2.1/src/log4c/category$(OBJEXT): log4c-1.2.1/src/log4c/category.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/category.c
+
+log4c-1.2.1/src/log4c/version$(OBJEXT): log4c-1.2.1/src/log4c/version.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/version.c
+
+log4c-1.2.1/src/log4c/layout_type_basic_r$(OBJEXT): log4c-1.2.1/src/log4c/layout_type_basic_r.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/layout_type_basic_r.c
+
+log4c-1.2.1/src/log4c/appender$(OBJEXT): log4c-1.2.1/src/log4c/appender.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/appender.c
+
+log4c-1.2.1/src/log4c/layout_type_dated_r$(OBJEXT): log4c-1.2.1/src/log4c/layout_type_dated_r.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/layout_type_dated_r.c
+
+log4c-1.2.1/src/log4c/init$(OBJEXT): log4c-1.2.1/src/log4c/init.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/init.c
+
+log4c-1.2.1/src/log4c/layout$(OBJEXT): log4c-1.2.1/src/log4c/layout.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/layout.c
+
+log4c-1.2.1/src/log4c/appender_type_stream2$(OBJEXT): log4c-1.2.1/src/log4c/appender_type_stream2.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/appender_type_stream2.c
+
+log4c-1.2.1/src/log4c/layout_type_basic$(OBJEXT): log4c-1.2.1/src/log4c/layout_type_basic.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/layout_type_basic.c
+
+log4c-1.2.1/src/log4c/layout_type_dated$(OBJEXT): log4c-1.2.1/src/log4c/layout_type_dated.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/layout_type_dated.c
+
+log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin$(OBJEXT): log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/rollingpolicy_type_sizewin.c
+
+log4c-1.2.1/src/log4c/priority$(OBJEXT): log4c-1.2.1/src/log4c/priority.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/priority.c
+
+log4c-1.2.1/src/log4c/appender_type_rollingfile$(OBJEXT): log4c-1.2.1/src/log4c/appender_type_rollingfile.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/appender_type_rollingfile.c
+
+log4c-1.2.1/src/log4c/appender_type_stream$(OBJEXT): log4c-1.2.1/src/log4c/appender_type_stream.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/appender_type_stream.c
+
+log4c-1.2.1/src/log4c/appender_type_syslog$(OBJEXT): log4c-1.2.1/src/log4c/appender_type_syslog.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/log4c/appender_type_syslog.c
+
+log4c-1.2.1/src/sd/domnode-xml-parser$(OBJEXT): log4c-1.2.1/src/sd/domnode-xml-parser.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/domnode-xml-parser.c
+
+log4c-1.2.1/src/sd/domnode-xml-scanner$(OBJEXT): log4c-1.2.1/src/sd/domnode-xml-scanner.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/domnode-xml-scanner.c
+
+log4c-1.2.1/src/sd/domnode-xml$(OBJEXT): log4c-1.2.1/src/sd/domnode-xml.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/domnode-xml.c
+
+log4c-1.2.1/src/sd/domnode$(OBJEXT): log4c-1.2.1/src/sd/domnode.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/domnode.c
+
+log4c-1.2.1/src/sd/error$(OBJEXT): log4c-1.2.1/src/sd/error.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/error.c
+
+log4c-1.2.1/src/sd/factory$(OBJEXT): log4c-1.2.1/src/sd/factory.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/factory.c
+
+log4c-1.2.1/src/sd/hash$(OBJEXT): log4c-1.2.1/src/sd/hash.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/hash.c
+
+log4c-1.2.1/src/sd/list$(OBJEXT): log4c-1.2.1/src/sd/list.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/list.c
+
+log4c-1.2.1/src/sd/malloc$(OBJEXT): log4c-1.2.1/src/sd/malloc.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/malloc.c
+
+log4c-1.2.1/src/sd/sd_xplatform$(OBJEXT): log4c-1.2.1/src/sd/sd_xplatform.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/sd_xplatform.c
+
+log4c-1.2.1/src/sd/sprintf$(OBJEXT): log4c-1.2.1/src/sd/sprintf.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/sprintf.c
+
+log4c-1.2.1/src/sd/stack$(OBJEXT): log4c-1.2.1/src/sd/stack.c
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) log4c-1.2.1/src/sd/stack.c
+
+clean:
+	-$(RM) $(OBJS)
+
+realclean: clean
+	-$(RM) $(SHLIB) $(LIB)
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) $(CHK_SOURCES)
+
+#----------------------------------------------------------------------------
+#       Dependencies
+#----------------------------------------------------------------------------
+
+$(DEPENDENCIES):
+	@$(TOUCH) $(DEPENDENCIES)
+
+depend:
+	-$(MPC_ROOT)/depgen.pl  $(CFLAGS) $(CCFLAGS) $(CPPFLAGS) -f $(DEPENDENCIES) $(SRC) 2> $(NUL)
+
+include $(DEPENDENCIES)

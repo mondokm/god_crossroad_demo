@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Vortex OpenSplice - documentation index</title>
+    <style type="text/css" media="all">
+      @import url("../css/maven-base.css");
+      @import url("../css/maven-theme.css");
+      @import url("../css/site.css");
+    </style>
+    <link rel="stylesheet" href="./docs/css/print.css" type="text/css" media="print" />
+    <meta name="Date-Revision-yyyymmdd" content="20141002" />
+    <meta http-equiv="Content-Language" content="en" />
+        
+ </head>
+ <body class="composite">
+    <div id="banner">
+       <a href="http://www.prismtech.com" id="bannerLeft">
+          <img src="../images/Prismtech_Logo.png" alt="Prismtech" />
+       </a>
+       <a href="http://www.prismtech.com/vortex/vortex-opensplice" id="bannerRight">
+          <img src="../images/Wide_OpenSplice.png" alt="Vortex Lite" />
+       </a>
+       <div class="clear">
+          <hr/>
+       </div>
+    </div>
+    <div id="breadcrumbs">
+       <div class="xright">
+          <a href="http://www.prismtech.com" class="externalLink" title="Prismtech on the Web: www.prismtech.com">Prismtech on the Web: www.prismtech.com</a>
+          | <a href="http://www.prismtech.com/vortex/vortex-opensplice" title="OpenSplice">Vortex OpenSplice</a>
+       </div>
+       <div class="clear">
+         <hr/>
+       </div>
+    </div>
+    <div id="leftColumn">
+      <div id="navcolumn">
+         <h5>Vortex OpenSplice</h5>
+         <ul>
+            <li class="none">
+            <a href="../../index.html" title = "Intro">Introduction</a>
+            </li>
+            <li class="none">
+              <a href="guides.html" title="APIs"><strong>User Guides</strong></a>
+            </li>
+            <li class="none">
+              <a href="changedV6.html" title="Changes">Changes</a><br>
+            </li>
+            <li class="none">
+              <a href="platforms.html" title="Supported Platforms">Supported Platforms</a><br>
+            </li>
+            <li class="none">
+              <a href="known_issues.html" title="Changes">Known Issues</a><br>
+            </li>
+            <li class="none">
+              <a href="tester_known_issues.html" title="Changes">Tester Known Issues</a><br>
+            </li>
+            <li class="none">
+              <a href="ddsi2_release_notes.html" title="Changes">DDSI Release Notes</a><br>
+            </li>
+            <li class="none">
+               <a href="rebuilding_APIs.html" title = "User Guide">Rebuilding the APIs</a><br>
+            </li>
+            <li class="none">
+               <a href="upgrading.html" title = "Upgrading">Upgrading OpenSplice</a><br>
+            </li>
+            <li class="none">
+               <a href="../../examples/dcps/README.html" title = "Examples">Examples</a><br>
+            </li>
+            <li class="none">
+               <a href="third_party_licenses.html" title = "Third Party Licenses">Third party licenses</a><br>
+            </li>
+            <li class="none">
+              <a href="./../../LICENSE" title="License">License</a>
+            </li>
+          </ul>
+      </a>
+      </div>
+    </div>
+    <div id="bodyColumn">
+      <div id="contentBox">
+    
+    <h2><a name="usage">How to use the C# API</a></h2>
+    <p>
+      The API is currently compiled on the Windows platform using Microsoft's C# compiler.
+      A port to Linux using the Mono framework has also been used by the opensource community,
+      but that is not yet part of the commercially supported releases. However, it should be possible to run the
+      Windows DLL on Mono, since Mono is binary compatible with Windows. The resulting
+      deliverable is a library file called dcpssacsAssembly.dll, which you can find in the %OSPL_HOME%/bin
+      directory alongside all the other OpenSplice DDS product libraries.
+    </p>
+    <p>
+      Since the DLL is a managed assembly, it is not found by Windows using the normal
+      PATH environment variable. In order for the .NET framework to find a library, this library
+      must either be copied to the same directory location as the executable that tries to load it,
+      or the library must be copied into the Global Assembly Cache (GAC).
+      For details about the global assembly cache, and how to manage it, see
+      <a href="http://en.wikipedia.org/wiki/Global_Assembly_Cache"> the Wikipedia
+      Global Assembly Cache information</a>.
+    </p>
+    <p>
+      The C# API is very similar to the other language bindings,
+      with a couple of exceptions:
+      <ul>
+        <li>The C# API satisfies the C# coding conventions, meaning that:</li>
+        <ul>
+          <li>All interfaces start with the 'I' character.</li>
+          <li>All operations are written in CamelBack notation ('CreateTopic'
+          instead of 'create_topic')</li>
+          <li>Class-Attributes are not implemented by explicit getter operations,
+          but by C# properties.</li>
+        </ul>
+        <li>The C# API introduces operation overloading:
+        many operations have multiple versions with different parameters:</li>
+        <ul>
+          <li>Choose the operation with the minimum amount of parameters that fits your need.</li>
+          <li>Parameters that are not passed are set to their default values.</li>
+          <li>This removes the need for some of the special purpose macro's that represent
+          default values for parameters.</li>
+        </ul>
+        <li>Constants have been defined in the classes they refer to.</li>
+        <ul>
+          <li>For example: the DURATION_INFINITE is a constant called 'Infinite'
+          in the struct Duration.</li>
+        </ul>
+      </ul>
+    </p>
+    <p>
+      To generate a C# data model from your Topic IDL definitions, use idlpp in the
+      following way:
+      <ul>
+        <ol>idlpp -l cs -S &lt IDL_FILE &gt</ol>
+      </ul>
+      <p>
+        Here, 'cs' represents the Csharp language, and -S represents the fact
+        that there is no dependency on any ORB. See also 'idlpp -h'.
+      </p>
+    </p>
+
+
+    <h2><a name="limitations">Current limitations of the C# API</a></h2>
+    <ul>
+      <li>idlpp is not able to generate the correct C# representation for IDL unions.</li>
+      <li>Datatypes generated by idlpp are not always initialized to valid default values.
+       For example, an array of strings is initialized to a string array holding
+       'null' pointers, which you need to assign manually before you can write the
+       contents of your sample into the DDS.</li>
+    </ul>
+
+    <h2><a href="../cs_api/html/index.html">C# API Reference Documentation</a></h2>
+    <div class="clear">
+    <hr/>
+    </div>
+    <div id="footer">
+      <div class="xright">
+       Copyright &#169; 2015 <a href="http://www.prismtech.com">PrismTech</a>. All Rights Reserved.      
+      </div>
+     <div class="clear">
+     <hr/>
+     </div>
+    </div>
+  </body>
+</html>

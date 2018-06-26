@@ -104,11 +104,11 @@ public class ControllerStatechart implements ControllerStatechartInterface {
 					case "Error.HealthError": 
 						controllerStatemachine.getSCIError().raiseHealthError();
 					break;
-					case "PoliceInterrupt.Police": 
-						controllerStatemachine.getSCIPoliceInterrupt().raisePolice();
-					break;
 					case "PoliceInterrupt.Reset": 
 						controllerStatemachine.getSCIPoliceInterrupt().raiseReset();
+					break;
+					case "PoliceInterrupt.Police": 
+						controllerStatemachine.getSCIPoliceInterrupt().raisePolice();
 					break;
 					default:
 						throw new IllegalArgumentException("No such event!");
@@ -148,25 +148,25 @@ public class ControllerStatechart implements ControllerStatechartInterface {
 
 
 		@Override
-		public boolean isRaisedPolice() {
-			return controllerStatemachine.getSCIPriorityPolice().isRaisedPolice();
-		}
-		@Override
 		public boolean isRaisedReset() {
 			return controllerStatemachine.getSCIPriorityPolice().isRaisedReset();
+		}
+		@Override
+		public boolean isRaisedPolice() {
+			return controllerStatemachine.getSCIPriorityPolice().isRaisedPolice();
 		}
 		@Override
 		public void registerListener(PoliceInterruptInterface.Listener.Provided listener) {
 			registeredListeners.add(listener);
 			controllerStatemachine.getSCIPriorityPolice().getListeners().add(new SCIPriorityPoliceListener() {
 				@Override
-				public void onPoliceRaised() {
-					listener.raisePolice();
+				public void onResetRaised() {
+					listener.raiseReset();
 				}
 				
 				@Override
-				public void onResetRaised() {
-					listener.raiseReset();
+				public void onPoliceRaised() {
+					listener.raisePolice();
 				}
 			});
 		}
@@ -250,25 +250,25 @@ public class ControllerStatechart implements ControllerStatechartInterface {
 
 
 		@Override
-		public boolean isRaisedPolice() {
-			return controllerStatemachine.getSCISecondaryPolice().isRaisedPolice();
-		}
-		@Override
 		public boolean isRaisedReset() {
 			return controllerStatemachine.getSCISecondaryPolice().isRaisedReset();
+		}
+		@Override
+		public boolean isRaisedPolice() {
+			return controllerStatemachine.getSCISecondaryPolice().isRaisedPolice();
 		}
 		@Override
 		public void registerListener(PoliceInterruptInterface.Listener.Provided listener) {
 			registeredListeners.add(listener);
 			controllerStatemachine.getSCISecondaryPolice().getListeners().add(new SCISecondaryPoliceListener() {
 				@Override
-				public void onPoliceRaised() {
-					listener.raisePolice();
+				public void onResetRaised() {
+					listener.raiseReset();
 				}
 				
 				@Override
-				public void onResetRaised() {
-					listener.raiseReset();
+				public void onPoliceRaised() {
+					listener.raisePolice();
 				}
 			});
 		}
@@ -289,13 +289,13 @@ public class ControllerStatechart implements ControllerStatechartInterface {
 		private List<PoliceInterruptInterface.Listener.Required> registeredListeners = new LinkedList<PoliceInterruptInterface.Listener.Required>();
 
 		@Override
-		public void raisePolice() {
-			getInsertQueue().add(new Event("PoliceInterrupt.Police", null));
+		public void raiseReset() {
+			getInsertQueue().add(new Event("PoliceInterrupt.Reset", null));
 		}
 		
 		@Override
-		public void raiseReset() {
-			getInsertQueue().add(new Event("PoliceInterrupt.Reset", null));
+		public void raisePolice() {
+			getInsertQueue().add(new Event("PoliceInterrupt.Police", null));
 		}
 
 		@Override
@@ -320,25 +320,25 @@ public class ControllerStatechart implements ControllerStatechartInterface {
 
 
 		@Override
-		public boolean isRaisedPolice() {
-			return controllerStatemachine.getSCIPedestrianPolice().isRaisedPolice();
-		}
-		@Override
 		public boolean isRaisedReset() {
 			return controllerStatemachine.getSCIPedestrianPolice().isRaisedReset();
+		}
+		@Override
+		public boolean isRaisedPolice() {
+			return controllerStatemachine.getSCIPedestrianPolice().isRaisedPolice();
 		}
 		@Override
 		public void registerListener(PoliceInterruptInterface.Listener.Provided listener) {
 			registeredListeners.add(listener);
 			controllerStatemachine.getSCIPedestrianPolice().getListeners().add(new SCIPedestrianPoliceListener() {
 				@Override
-				public void onPoliceRaised() {
-					listener.raisePolice();
+				public void onResetRaised() {
+					listener.raiseReset();
 				}
 				
 				@Override
-				public void onResetRaised() {
-					listener.raiseReset();
+				public void onPoliceRaised() {
+					listener.raisePolice();
 				}
 			});
 		}

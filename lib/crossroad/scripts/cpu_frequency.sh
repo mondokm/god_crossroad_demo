@@ -30,10 +30,10 @@ fi
 
 if [ "$RET" -gt "$MAX" ]
 then
-    echo "ERROR! " $MAXERR $RET
+    echo "ERROR! " $MAXERR
 elif [ "$MIN" -gt "$RET" ]
 then
-    echo "ERROR! " $MINERR $RET
+    echo "ERROR! " $MINERR
 else
     echo $RET
 fi

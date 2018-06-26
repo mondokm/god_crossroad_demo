@@ -1,0 +1,98 @@
+# -*-Makefile-*-
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+
+CC            = gcc
+CXX           = g++
+LD            = $(CC)
+AR            = ar
+PICFLAGS      = -fPIC
+CCFLAGS        =  
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -D_REENTRANT -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=500 -Wall -Wno-unused-function -I"../../../../include" -I"../../../../include/sys" -I"../../../../include/dcps/C/SAC" -I"." -I"../../../../examples/include" -I"../../../../examples"
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"." -L"../../../../lib" -Wl,-rpath,\$$ORIGIN -Wl,-rpath,\$$ORIGIN/../../../../lib
+CCC           = $(CXX)
+MAKEFILE      = Makefile.SA_C_RoundTrip_Types
+DEPENDENCIES  = $(MAKEFILE)
+LTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -O3 -DNDEBUG
+LDLIBS        = -l"dcpssac" -l"ddskernel" -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
+OBJS          = .obj$(CFG)/RoundTripSacDcps$(OBJEXT) .obj$(CFG)/RoundTripSplDcps$(OBJEXT)
+AREXT         = .a
+LIB           = $(LTARGETDIR)$(LIBPREFIX)SA_C_RoundTrip_Types$(LIBSUFFIX)$(AREXT)
+SOEXT         = .so
+SHTARGETDIR   = ./
+SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)SA_C_RoundTrip_Types$(LIBSUFFIX)$(SOEXT)
+SHFLAGS       = -shared
+SRC           = RoundTripSacDcps.c RoundTripSplDcps.c
+LINK.cc       = $(LD) $(LDFLAGS)
+DYNAMICFLAGS  = -DOSPL_BUILDEXAMPLE_LIB
+EXPORTFLAGS   = $(DYNAMICFLAGS)
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(SHLIB)
+
+$(SHLIB): $(OBJS)
+	@$(TESTDIRSTART) "$(SHTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(SHTARGETDIR)"
+	$(LINK.cc) $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+
+$(LIB): $(OBJS)
+	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS) 
+
+GENERATED_DIRTY = RoundTripDcps.h RoundTrip.h RoundTripSplDcps.h RoundTripSacDcps.h RoundTripSacDcps.c RoundTripSplDcps.c
+
+export DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):../../../../bin:../../../../lib
+export LD_LIBRARY_PATH   := $(LD_LIBRARY_PATH):../../../../bin:../../../../lib
+export SHLIB_PATH        := $(SHLIB_PATH):../../../../bin:../../../../lib
+export LIBPATH           := $(LIBPATH):../../../../bin:../../../../lib
+export PATH              := $(PATH):../../../../bin:../../../../lib
+
+.NOTPARALLEL:
+RoundTripDcps.h RoundTrip.h RoundTripSplDcps.h RoundTripSacDcps.h RoundTripSacDcps.c RoundTripSplDcps.c: ../idl/RoundTrip.idl
+	"../../../../bin/idlpp" -I "../../../../etc/idl" -l c ../idl/RoundTrip.idl
+
+.PRECIOUS: $(GENERATED_DIRTY)
+$(OBJS): $(GENERATED_DIRTY)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+.obj$(CFG)/RoundTripSacDcps$(OBJEXT): RoundTripSacDcps.c
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) RoundTripSacDcps.c
+
+.obj$(CFG)/RoundTripSplDcps$(OBJEXT): RoundTripSplDcps.c
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) RoundTripSplDcps.c
+
+clean:
+	-$(RM) $(OBJS)
+
+realclean: clean
+	-$(RM) $(SHLIB) $(LIB)
+	-$(RM) $(GENERATED_DIRTY)
+	-$(RM) .obj$(CFG)/
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) $(CHK_SOURCES)
+

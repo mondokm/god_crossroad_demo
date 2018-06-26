@@ -16,7 +16,7 @@ MINERR="CPU Utilisation is too low!"
 # MAKE THE CODE SET THE VARIABLE 'RET' ACCORDINGLY 
 ########################################################################
 
-CORES=$(../lib/scripts/no_cores.sh)
+CORES=$(./no_cores.sh)
 RET=0
 CURRENT=0
 for (( i=0; i<$CORES; i++))
@@ -41,10 +41,10 @@ done
 
 if [ "$RET" -gt "$MAX" ]
 then
-    echo "ERROR! " $MAXERR $RET
+    echo "ERROR! " $MAXERR
 elif [ "$MIN" -gt "$RET" ]
 then
-    echo "ERROR! " $MINERR $RET
+    echo "ERROR! " $MINERR
 else
     echo $RET
 fi

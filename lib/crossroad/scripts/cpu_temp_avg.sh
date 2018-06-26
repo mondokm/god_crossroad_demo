@@ -17,7 +17,7 @@ MINERR="CPU Temperature is too low!"
 # MAKE THE CODE SET THE VARIABLE 'RET' ACCORDINGLY 
 ########################################################################
 
-CORES=$(../lib/scripts/no_cores.sh)
+CORES=$(./no_cores.sh)
 RET=0
 if hash sensors 2>/dev/null; then
     CURRENT=0
@@ -40,10 +40,10 @@ fi
 
 if [ "$RET" -gt "$MAX" ]
 then
-    echo "ERROR! " $MAXERR $RET
+    echo "ERROR! " $MAXERR
 elif [ "$MIN" -gt "$RET" ]
 then
-    echo "ERROR! " $MINERR $RET
+    echo "ERROR! " $MINERR
 else
     echo $RET
 fi

@@ -105,12 +105,12 @@ public class TrafficLightWrapper implements Runnable, TrafficLightWrapperInterfa
 	public class PoliceInterrupt implements PoliceInterruptInterface.Required {
 		
 		@Override
-		public void raisePolice() {
-			pingMessages.offer(new Event("PoliceInterrupt.police", null));
-		}
-		@Override
 		public void raiseReset() {
 			pingMessages.offer(new Event("PoliceInterrupt.reset", null));
+		}
+		@Override
+		public void raisePolice() {
+			pingMessages.offer(new Event("PoliceInterrupt.police", null));
 		}
 		
 		
@@ -135,8 +135,8 @@ public class TrafficLightWrapper implements Runnable, TrafficLightWrapperInterfa
 		
 		
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayYellow();
+		public boolean isRaisedDisplayGreen() {
+			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayGreen();
 		}
 		
 		@Override
@@ -145,13 +145,13 @@ public class TrafficLightWrapper implements Runnable, TrafficLightWrapperInterfa
 		}
 		
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayRed() {
+			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayRed();
 		}
 		
 		@Override
-		public boolean isRaisedDisplayRed() {
-			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayRed();
+		public boolean isRaisedDisplayYellow() {
+			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -199,11 +199,11 @@ public class TrafficLightWrapper implements Runnable, TrafficLightWrapperInterfa
 			case "Control.toggle":
 				trafficLightCtrlStatechart.getControl().raiseToggle();
 			break;
-			case "PoliceInterrupt.police":
-				trafficLightCtrlStatechart.getPoliceInterrupt().raisePolice();
-			break;
 			case "PoliceInterrupt.reset":
 				trafficLightCtrlStatechart.getPoliceInterrupt().raiseReset();
+			break;
+			case "PoliceInterrupt.police":
+				trafficLightCtrlStatechart.getPoliceInterrupt().raisePolice();
 			break;
 			default:
 				throw new IllegalArgumentException("No such event!");

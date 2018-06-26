@@ -1,0 +1,80 @@
+# -*-Makefile-*-
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+
+CC            = gcc
+CXX           = g++
+LD            = $(CC)
+AR            = ar
+PICFLAGS      = -fPIC
+CCFLAGS        =  
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -D_REENTRANT -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=500 -Wall -Wno-unused-function -I"." -I"../../../../../examples/include" -I"../../../../../examples" -I"../../../../../include" -I"../../../../../include/sys" -I"../../../../../include/dcps/C/SAC"
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"." -L"../../../../../lib" -Wl,-rpath,\$$ORIGIN -Wl,-rpath,\$$ORIGIN/../../../../../lib
+CCC           = $(CXX)
+MAKEFILE      = Makefile.sac_listener_sub
+DEPENDENCIES  = $(MAKEFILE)
+BTARGETDIR    = ./
+BIN           = $(BTARGETDIR)sac_listener_sub$(EXESUFFIX)$(EXEEXT)
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -O3 -DNDEBUG
+LDLIBS        = -l"sac_listener_types$(LIBSUFFIX)" -l"dcpssac" -l"ddskernel" -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
+OBJS          = .obj$(CFG)/CheckStatus$(OBJEXT) .obj$(CFG)/DDSEntitiesManager$(OBJEXT) .obj$(CFG)/ListenerDataSubscriber$(OBJEXT) .obj$(CFG)/ListenerDataListener$(OBJEXT)
+SRC           = ../src/CheckStatus.c ../src/DDSEntitiesManager.c ../src/ListenerDataSubscriber.c ../src/ListenerDataListener.c
+LINK.cc       = $(LD) $(LDFLAGS)
+EXPORTFLAGS   = 
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(BIN)
+
+$(BIN): $(OBJS)
+	@$(TESTDIRSTART) "$(BTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(BTARGETDIR)"
+	$(LINK.cc) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+.obj$(CFG)/CheckStatus$(OBJEXT): ../src/CheckStatus.c
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/CheckStatus.c
+
+.obj$(CFG)/DDSEntitiesManager$(OBJEXT): ../src/DDSEntitiesManager.c
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/DDSEntitiesManager.c
+
+.obj$(CFG)/ListenerDataSubscriber$(OBJEXT): ../src/ListenerDataSubscriber.c
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/ListenerDataSubscriber.c
+
+.obj$(CFG)/ListenerDataListener$(OBJEXT): ../src/ListenerDataListener.c
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.c) $(EXPORTFLAGS) $(OUTPUT_OPTION) ../src/ListenerDataListener.c
+
+clean:
+	-$(RM) $(OBJS)
+
+realclean: clean
+	-$(RM) $(BIN)
+	-$(RM) .obj$(CFG)/
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) $(CHK_SOURCES)
+

@@ -1,0 +1,82 @@
+# -*-Makefile-*-
+#----------------------------------------------------------------------------
+#       Macros
+#----------------------------------------------------------------------------
+
+CC            = gcc
+CXX           = g++
+LD            = $(CXX) $(CCFLAGS) $(PICFLAGS) $(GENFLAGS)
+AR            = ar
+PICFLAGS      = -fPIC
+CCFLAGS        =  
+CPPFLAGS      = $(PICFLAGS) $(GENFLAGS) -D_REENTRANT -D_POSIX_C_SOURCE=200112L -D_XOPEN_SOURCE=500 -Wall -Wno-unused-function -std=c++0x -I"../../../../include" -I"../../../../include/sys" -I"$(BOOST_ROOT)/." -I"../../../../include/dcps/C++/isocpp2" -I"../../../../include/dcps/C++/SACPP" -I"." -I"../../../../examples/include" -I"../../../../examples"
+OBJEXT        = .o
+OUTPUT_OPTION = -o "$@"
+COMPILE.c     = $(CC) $(CFLAGS) $(CPPFLAGS) -c
+COMPILE.cc    = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
+LDFLAGS       = -L"." -L"../../../../lib" -Wl,-rpath,\$$ORIGIN -Wl,-rpath,\$$ORIGIN/../../../../lib
+CCC           = $(CXX)
+MAKEFILE      = Makefile.ISO_Cxx_V2_Listener_Impl
+DEPENDENCIES  = $(MAKEFILE)
+LTARGETDIR    = ./
+CAT           = cat
+MV            = mv -f
+RM            = rm -rf
+CP            = cp -p
+NUL           = /dev/null
+MKDIR         = mkdir -p
+TESTDIRSTART  = test -d
+TESTDIREND    = ||
+TOUCH         = touch
+EXEEXT        = 
+LIBPREFIX     = lib
+LIBSUFFIX     = 
+GENFLAGS      = -O3 -DNDEBUG
+LDLIBS        = -l"ISO_Cxx_V2_Listener_Types$(LIBSUFFIX)" -l"dcpsisocpp2$(LIBSUFFIX)" -l"ddskernel" -ldl $(subst lib,-l,$(sort $(basename $(notdir $(wildcard /usr/lib/librt.so /lib/librt.so))))) -lpthread
+OBJS          = .obj$(CFG)/implementation$(OBJEXT) .obj$(CFG)/ExampleDataReaderListener$(OBJEXT)
+AREXT         = .a
+LIB           = $(LTARGETDIR)$(LIBPREFIX)ISO_Cxx_V2_Listener_Impl$(LIBSUFFIX)$(AREXT)
+SOEXT         = .so
+SHTARGETDIR   = ./
+SHLIB         = $(SHTARGETDIR)$(LIBPREFIX)ISO_Cxx_V2_Listener_Impl$(LIBSUFFIX)$(SOEXT)
+SHFLAGS       = -shared
+SRC           = implementation.cpp ExampleDataReaderListener.cpp
+LINK.cc       = $(LD) $(LDFLAGS)
+DYNAMICFLAGS  = -DOSPL_BUILDEXAMPLE_IMPL_LIB
+EXPORTFLAGS   = $(DYNAMICFLAGS)
+
+#----------------------------------------------------------------------------
+#       Local targets
+#----------------------------------------------------------------------------
+
+all: $(SHLIB)
+
+$(SHLIB): $(OBJS)
+	@$(TESTDIRSTART) "$(SHTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(SHTARGETDIR)"
+	$(LINK.cc) $(SHFLAGS) $(OBJS) $(LDLIBS) $(OUTPUT_OPTION)
+
+$(LIB): $(OBJS)
+	@$(TESTDIRSTART) "$(LTARGETDIR)" $(TESTDIREND) $(MKDIR) "$(LTARGETDIR)"
+	$(AR) $(ARFLAGS) $(LIB) $(OBJS) 
+
+generated: $(GENERATED_DIRTY)
+	@-:
+
+.obj$(CFG)/implementation$(OBJEXT): implementation.cpp
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) implementation.cpp
+
+.obj$(CFG)/ExampleDataReaderListener$(OBJEXT): ExampleDataReaderListener.cpp
+	@$(TESTDIRSTART) ".obj$(CFG)/" $(TESTDIREND) $(MKDIR) ".obj$(CFG)/"
+	$(COMPILE.cc) $(EXPORTFLAGS) $(OUTPUT_OPTION) ExampleDataReaderListener.cpp
+
+clean:
+	-$(RM) $(OBJS)
+
+realclean: clean
+	-$(RM) $(SHLIB) $(LIB)
+	-$(RM) .obj$(CFG)/
+
+check-syntax:
+	$(COMPILE.cc) $(EXPORTFLAGS) $(CHK_SOURCES)
+
