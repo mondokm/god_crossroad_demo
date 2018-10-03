@@ -23,10 +23,6 @@ public class SecondaryBProgram {
 	}
 	
 	public void run() {
-        Health health = new Health();
-        Telemetry telemetry = new Telemetry("SecondaryBNode");
-        health.start();
-        telemetry.start();
 		gpio = GpioFactory.getInstance();
 		greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_11, "MyLED", PinState.HIGH);
 		yellowPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "MyLED", PinState.HIGH);

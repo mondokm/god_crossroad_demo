@@ -1,7 +1,7 @@
 package hu.bme.mit.gamma.impl.secondaryanode;
 
-import hu.bme.mit.gamma.ddslib.model.*;
-import hu.bme.mit.gamma.ddslib.opensplice.*;
+import hu.bme.mit.ftsrg.ddslib.model.*;
+import hu.bme.mit.ftsrg.ddslib.opensplice.*;
 
 import java.util.List;
 import org.yakindu.scr.ITimer;
@@ -9,9 +9,9 @@ import org.yakindu.scr.ITimer;
 import hu.bme.mit.gamma.impl.interfaces.*;
 import hu.bme.mit.gamma.impl.channels.*;
 import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
-import hu.bme.mit.gamma.impl.monitorwrapper.*;
 import hu.bme.mit.gamma.impl.controllerwrapper.*;
 import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
+import hu.bme.mit.gamma.impl.monitorwrapper.*;
 
 public class SecondaryANode  {			
 	// Component instances
@@ -22,10 +22,10 @@ public class SecondaryANode  {
 	private PedestrianAOutput pedestrianAOutput = new PedestrianAOutput();
 	// Inner channel instances
 	// Outer channel topics
-	private Topics secondaryControlOfController;			
 	private Topics secondaryPoliceOfController;			
-	private Topics pedestrianPoliceOfController;			
+	private Topics secondaryControlOfController;			
 	private Topics pedestrianControlOfController;			
+	private Topics pedestrianPoliceOfController;			
 	
 	public SecondaryANode() {
 		init();
@@ -43,14 +43,14 @@ public class SecondaryANode  {
 		// Registration of simple channels
 		// Registration of broadcast channels
 		// Instantiation of topics
-		secondaryControlOfController = new Topics("crossroad","secondaryControlOfController");
-		secondaryControlOfController.addSubscriptionListener(new SecondaryControlOfControllerListener());
 		secondaryPoliceOfController = new Topics("crossroad","secondaryPoliceOfController");
 		secondaryPoliceOfController.addSubscriptionListener(new SecondaryPoliceOfControllerListener());
-		pedestrianPoliceOfController = new Topics("crossroad","pedestrianPoliceOfController");
-		pedestrianPoliceOfController.addSubscriptionListener(new PedestrianPoliceOfControllerListener());
+		secondaryControlOfController = new Topics("crossroad","secondaryControlOfController");
+		secondaryControlOfController.addSubscriptionListener(new SecondaryControlOfControllerListener());
 		pedestrianControlOfController = new Topics("crossroad","pedestrianControlOfController");
 		pedestrianControlOfController.addSubscriptionListener(new PedestrianControlOfControllerListener());
+		pedestrianPoliceOfController = new Topics("crossroad","pedestrianPoliceOfController");
+		pedestrianPoliceOfController.addSubscriptionListener(new PedestrianPoliceOfControllerListener());
 		reset();
 	}
 	
@@ -59,20 +59,20 @@ public class SecondaryANode  {
 	
 		
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return secondaryA.getLightCommands().isRaisedDisplayYellow();
-		}
-		@Override
-		public boolean isRaisedDisplayGreen() {
-			return secondaryA.getLightCommands().isRaisedDisplayGreen();
-		}
-		@Override
 		public boolean isRaisedDisplayRed() {
 			return secondaryA.getLightCommands().isRaisedDisplayRed();
 		}
 		@Override
 		public boolean isRaisedDisplayNone() {
 			return secondaryA.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayGreen() {
+			return secondaryA.getLightCommands().isRaisedDisplayGreen();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return secondaryA.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -95,20 +95,20 @@ public class SecondaryANode  {
 	
 		
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrianA.getLightCommands().isRaisedDisplayYellow();
-		}
-		@Override
-		public boolean isRaisedDisplayGreen() {
-			return pedestrianA.getLightCommands().isRaisedDisplayGreen();
-		}
-		@Override
 		public boolean isRaisedDisplayRed() {
 			return pedestrianA.getLightCommands().isRaisedDisplayRed();
 		}
 		@Override
 		public boolean isRaisedDisplayNone() {
 			return pedestrianA.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianA.getLightCommands().isRaisedDisplayGreen();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianA.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -130,14 +130,6 @@ public class SecondaryANode  {
 	// Inner classes for publishing events
 	
 	// Inner classes for receiving events
-	class SecondaryControlOfControllerListener implements SubscriptionListener{
-		public void gotMessage(String topic, String event, String params){
-			switch(event){
-				case "toggle": secondaryA.getControl().raiseToggle();
-						break;
-			}
-		}	
-	}	
 	class SecondaryPoliceOfControllerListener implements SubscriptionListener{
 		public void gotMessage(String topic, String event, String params){
 			switch(event){
@@ -148,12 +140,10 @@ public class SecondaryANode  {
 			}
 		}	
 	}	
-	class PedestrianPoliceOfControllerListener implements SubscriptionListener{
+	class SecondaryControlOfControllerListener implements SubscriptionListener{
 		public void gotMessage(String topic, String event, String params){
 			switch(event){
-				case "reset": pedestrianA.getPoliceInterrupt().raiseReset();
-						break;
-				case "police": pedestrianA.getPoliceInterrupt().raisePolice();
+				case "toggle": secondaryA.getControl().raiseToggle();
 						break;
 			}
 		}	
@@ -162,6 +152,16 @@ public class SecondaryANode  {
 		public void gotMessage(String topic, String event, String params){
 			switch(event){
 				case "toggle": pedestrianA.getControl().raiseToggle();
+						break;
+			}
+		}	
+	}	
+	class PedestrianPoliceOfControllerListener implements SubscriptionListener{
+		public void gotMessage(String topic, String event, String params){
+			switch(event){
+				case "reset": pedestrianA.getPoliceInterrupt().raiseReset();
+						break;
+				case "police": pedestrianA.getPoliceInterrupt().raisePolice();
 						break;
 			}
 		}	
@@ -190,10 +190,10 @@ public class SecondaryANode  {
 	
 	// Method for closing the topics
 	public void closeTopics(){
-		secondaryControlOfController.closeTopic();
 		secondaryPoliceOfController.closeTopic();
-		pedestrianPoliceOfController.closeTopic();
+		secondaryControlOfController.closeTopic();
 		pedestrianControlOfController.closeTopic();
+		pedestrianPoliceOfController.closeTopic();
 	}
 	
 }

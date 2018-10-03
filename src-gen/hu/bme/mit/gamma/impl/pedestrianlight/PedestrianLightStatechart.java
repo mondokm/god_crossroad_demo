@@ -113,8 +113,8 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 
 
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayYellow();
 		}
 		@Override
 		public boolean isRaisedDisplayNone() {
@@ -125,16 +125,16 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayRed();
 		}
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayYellow();
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianLightStatemachine.getSCILightCommands().isRaisedDisplayGreen();
 		}
 		@Override
 		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
 			registeredListeners.add(listener);
 			pedestrianLightStatemachine.getSCILightCommands().getListeners().add(new SCILightCommandsListener() {
 				@Override
-				public void onDisplayGreenRaised() {
-					listener.raiseDisplayGreen();
+				public void onDisplayYellowRaised() {
+					listener.raiseDisplayYellow();
 				}
 				
 				@Override
@@ -148,8 +148,8 @@ public class PedestrianLightStatechart implements PedestrianLightStatechartInter
 				}
 				
 				@Override
-				public void onDisplayYellowRaised() {
-					listener.raiseDisplayYellow();
+				public void onDisplayGreenRaised() {
+					listener.raiseDisplayGreen();
 				}
 			});
 		}

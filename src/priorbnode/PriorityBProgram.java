@@ -23,10 +23,6 @@ public class PriorityBProgram {
 	}
 	
 	public void run() {
-        Health health = new Health();
-        Telemetry telemetry = new Telemetry("PriorBNode");
-        health.start();
-        telemetry.start();
 		gpio = GpioFactory.getInstance();
 		greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "MyLED", PinState.HIGH);
 		yellowPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "MyLED", PinState.HIGH);

@@ -81,8 +81,8 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 		
 		
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -96,8 +96,8 @@ public class PedestrianLightWrapper implements Runnable, PedestrianLightWrapperI
 		}
 		
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayYellow();
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianLightStatechart.getLightCommands().isRaisedDisplayGreen();
 		}
 		
 		@Override

@@ -1,7 +1,7 @@
 package hu.bme.mit.gamma.impl.prioranode;
 
-import hu.bme.mit.gamma.ddslib.model.*;
-import hu.bme.mit.gamma.ddslib.opensplice.*;
+import hu.bme.mit.ftsrg.ddslib.model.*;
+import hu.bme.mit.ftsrg.ddslib.opensplice.*;
 
 import java.util.List;
 import org.yakindu.scr.ITimer;
@@ -9,9 +9,9 @@ import org.yakindu.scr.ITimer;
 import hu.bme.mit.gamma.impl.interfaces.*;
 import hu.bme.mit.gamma.impl.channels.*;
 import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
-import hu.bme.mit.gamma.impl.monitorwrapper.*;
 import hu.bme.mit.gamma.impl.controllerwrapper.*;
 import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
+import hu.bme.mit.gamma.impl.monitorwrapper.*;
 
 public class PriorANode  {			
 	// Component instances
@@ -22,10 +22,10 @@ public class PriorANode  {
 	private PedestrianBOutput pedestrianBOutput = new PedestrianBOutput();
 	// Inner channel instances
 	// Outer channel topics
+	private Topics priorityPoliceOfController;			
+	private Topics pedestrianControlOfController;			
 	private Topics priorityControlOfController;			
 	private Topics pedestrianPoliceOfController;			
-	private Topics pedestrianControlOfController;			
-	private Topics priorityPoliceOfController;			
 	
 	public PriorANode() {
 		init();
@@ -43,14 +43,14 @@ public class PriorANode  {
 		// Registration of simple channels
 		// Registration of broadcast channels
 		// Instantiation of topics
+		priorityPoliceOfController = new Topics("crossroad","priorityPoliceOfController");
+		priorityPoliceOfController.addSubscriptionListener(new PriorityPoliceOfControllerListener());
+		pedestrianControlOfController = new Topics("crossroad","pedestrianControlOfController");
+		pedestrianControlOfController.addSubscriptionListener(new PedestrianControlOfControllerListener());
 		priorityControlOfController = new Topics("crossroad","priorityControlOfController");
 		priorityControlOfController.addSubscriptionListener(new PriorityControlOfControllerListener());
 		pedestrianPoliceOfController = new Topics("crossroad","pedestrianPoliceOfController");
 		pedestrianPoliceOfController.addSubscriptionListener(new PedestrianPoliceOfControllerListener());
-		pedestrianControlOfController = new Topics("crossroad","pedestrianControlOfController");
-		pedestrianControlOfController.addSubscriptionListener(new PedestrianControlOfControllerListener());
-		priorityPoliceOfController = new Topics("crossroad","priorityPoliceOfController");
-		priorityPoliceOfController.addSubscriptionListener(new PriorityPoliceOfControllerListener());
 		reset();
 	}
 	
@@ -59,20 +59,20 @@ public class PriorANode  {
 	
 		
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return priorA.getLightCommands().isRaisedDisplayYellow();
-		}
-		@Override
-		public boolean isRaisedDisplayGreen() {
-			return priorA.getLightCommands().isRaisedDisplayGreen();
-		}
-		@Override
 		public boolean isRaisedDisplayRed() {
 			return priorA.getLightCommands().isRaisedDisplayRed();
 		}
 		@Override
 		public boolean isRaisedDisplayNone() {
 			return priorA.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayGreen() {
+			return priorA.getLightCommands().isRaisedDisplayGreen();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return priorA.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -95,20 +95,20 @@ public class PriorANode  {
 	
 		
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrianB.getLightCommands().isRaisedDisplayYellow();
-		}
-		@Override
-		public boolean isRaisedDisplayGreen() {
-			return pedestrianB.getLightCommands().isRaisedDisplayGreen();
-		}
-		@Override
 		public boolean isRaisedDisplayRed() {
 			return pedestrianB.getLightCommands().isRaisedDisplayRed();
 		}
 		@Override
 		public boolean isRaisedDisplayNone() {
 			return pedestrianB.getLightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayGreen() {
+			return pedestrianB.getLightCommands().isRaisedDisplayGreen();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianB.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -130,6 +130,24 @@ public class PriorANode  {
 	// Inner classes for publishing events
 	
 	// Inner classes for receiving events
+	class PriorityPoliceOfControllerListener implements SubscriptionListener{
+		public void gotMessage(String topic, String event, String params){
+			switch(event){
+				case "reset": priorA.getPoliceInterrupt().raiseReset();
+						break;
+				case "police": priorA.getPoliceInterrupt().raisePolice();
+						break;
+			}
+		}	
+	}	
+	class PedestrianControlOfControllerListener implements SubscriptionListener{
+		public void gotMessage(String topic, String event, String params){
+			switch(event){
+				case "toggle": pedestrianB.getControl().raiseToggle();
+						break;
+			}
+		}	
+	}	
 	class PriorityControlOfControllerListener implements SubscriptionListener{
 		public void gotMessage(String topic, String event, String params){
 			switch(event){
@@ -144,24 +162,6 @@ public class PriorANode  {
 				case "reset": pedestrianB.getPoliceInterrupt().raiseReset();
 						break;
 				case "police": pedestrianB.getPoliceInterrupt().raisePolice();
-						break;
-			}
-		}	
-	}	
-	class PedestrianControlOfControllerListener implements SubscriptionListener{
-		public void gotMessage(String topic, String event, String params){
-			switch(event){
-				case "toggle": pedestrianB.getControl().raiseToggle();
-						break;
-			}
-		}	
-	}	
-	class PriorityPoliceOfControllerListener implements SubscriptionListener{
-		public void gotMessage(String topic, String event, String params){
-			switch(event){
-				case "reset": priorA.getPoliceInterrupt().raiseReset();
-						break;
-				case "police": priorA.getPoliceInterrupt().raisePolice();
 						break;
 			}
 		}	
@@ -190,10 +190,10 @@ public class PriorANode  {
 	
 	// Method for closing the topics
 	public void closeTopics(){
+		priorityPoliceOfController.closeTopic();
+		pedestrianControlOfController.closeTopic();
 		priorityControlOfController.closeTopic();
 		pedestrianPoliceOfController.closeTopic();
-		pedestrianControlOfController.closeTopic();
-		priorityPoliceOfController.closeTopic();
 	}
 	
 }

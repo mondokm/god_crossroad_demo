@@ -293,6 +293,8 @@ public class ControllerStatemachine implements IControllerStatemachine {
 	private ITimer timer;
 	
 	private final boolean[] timeEvents = new boolean[7];
+	
+	
 	public ControllerStatemachine() {
 		sCIPoliceInterrupt = new SCIPoliceInterruptImpl();
 		sCIPriorityPolice = new SCIPriorityPoliceImpl();
@@ -309,6 +311,7 @@ public class ControllerStatemachine implements IControllerStatemachine {
 		if (timer == null) {
 			throw new IllegalStateException("timer not set.");
 		}
+		
 		for (int i = 0; i < 1; i++) {
 			stateVector[i] = State.$NullState$;
 		}
@@ -327,6 +330,7 @@ public class ControllerStatemachine implements IControllerStatemachine {
 		if (timer == null) {
 			throw new IllegalStateException("timer not set.");
 		}
+	
 		enterSequence_main_region_default();
 	}
 	

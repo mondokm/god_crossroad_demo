@@ -1,7 +1,4 @@
 import crossroad
-[
-	
-]
 node ControllerNode running controller
 [
 	platform armv8_linux

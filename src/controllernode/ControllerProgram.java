@@ -27,10 +27,6 @@ public class ControllerProgram {
 	}
 	
 	public void run() {
-        Health health = new Health();
-        Telemetry telemetry = new Telemetry("ControllerNode");
-        health.start();
-        telemetry.start();
 		node=new ControllerNode();
 		node.start();
 		createGUI();		

@@ -6,6 +6,11 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="test-gen"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="lib" path="/git/god_demo/lib/crossroad/hu.bme.mit.gamma.ddslib.jar"/>
+	<classpathentry exported="true" kind="lib" path="/home/milan/god-vortex/god_crossroad_demo/lib/crossroad/hu.bme.mit.ftsrg.ddslib.jar"/>
+	<classpathentry kind="lib" path="/home/milan/god-vortex/god_crossroad_demo/lib/crossroad/hu.bme.mit.ftsrg.monitoring.client.jar"/>
+	<classpathentry kind="lib" path="/home/milan/god-vortex/god_crossroad_demo/lib/crossroad/hu.bme.mit.gamma.ddslib.jar"/>
+	<classpathentry kind="lib" path="/home/milan/god-vortex/god_crossroad_demo/lib/prioranode/pi4j-core.jar"/>
+	<classpathentry kind="lib" path="/home/milan/god-vortex/god_crossroad_demo/lib/prioranode/pi4j-device.jar"/>
+	<classpathentry kind="lib" path="/home/milan/god-vortex/god_crossroad_demo/lib/prioranode/pi4j-gpio-extension.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

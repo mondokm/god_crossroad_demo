@@ -46,12 +46,15 @@ public class MonitorStatemachine implements IMonitorStatemachine {
 	
 	private int nextStateIndex;
 	
+	
+	
 	public MonitorStatemachine() {
 		sCIErrorOut = new SCIErrorOutImpl();
 	}
 	
 	public void init() {
 		this.initialized = true;
+		
 		for (int i = 0; i < 1; i++) {
 			stateVector[i] = State.$NullState$;
 		}
@@ -64,6 +67,7 @@ public class MonitorStatemachine implements IMonitorStatemachine {
 			throw new IllegalStateException(
 					"The state machine needs to be initialized first by calling the init() function.");
 		}
+	
 		enterSequence_main_region_default();
 	}
 	

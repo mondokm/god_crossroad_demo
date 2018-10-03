@@ -135,8 +135,8 @@ public class TrafficLightWrapper implements Runnable, TrafficLightWrapperInterfa
 		
 		
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayYellow() {
+			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -150,8 +150,8 @@ public class TrafficLightWrapper implements Runnable, TrafficLightWrapperInterfa
 		}
 		
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayYellow();
+		public boolean isRaisedDisplayGreen() {
+			return trafficLightCtrlStatechart.getLightCommands().isRaisedDisplayGreen();
 		}
 		
 		@Override
