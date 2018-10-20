@@ -24,9 +24,9 @@ public class PriorityBProgram {
 	
 	public void run() {
 		gpio = GpioFactory.getInstance();
-		greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "MyLED", PinState.HIGH);
+		greenPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_11, "MyLED", PinState.HIGH);
 		yellowPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_10, "MyLED", PinState.HIGH);
-		redPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_11, "MyLED", PinState.HIGH);
+		redPin = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_06, "MyLED", PinState.HIGH);
 		
 		node=new PriorBNode();
 		node.getPriorityBOutput().registerListener(new LightsListener());
