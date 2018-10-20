@@ -370,16 +370,16 @@ public class PedestrianLightStatemachine implements IPedestrianLightStatemachine
 	
 	/* Entry action for state 'None'. */
 	private void entryAction_main_region_Normal_normal_Ending_blinking_None() {
-		timer.setTimer(this, 0, 500, false);
+		timer.setTimer(this, 0, 250, false);
 		
 		sCILightCommands.raiseDisplayNone();
 	}
 	
 	/* Entry action for state 'Green'. */
 	private void entryAction_main_region_Normal_normal_Ending_blinking_Green() {
-		timer.setTimer(this, 1, 500, false);
+		timer.setTimer(this, 1, 250, false);
 		
-		sCILightCommands.raiseDisplayNone();
+		sCILightCommands.raiseDisplayGreen();
 	}
 	
 	/* Entry action for state 'Black'. */
