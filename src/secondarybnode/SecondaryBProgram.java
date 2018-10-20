@@ -40,7 +40,6 @@ public class SecondaryBProgram {
 			redPin.low();
 			yellowPin.low();
 			greenPin.low();
-			System.out.println("none");
 		}
 
 		@Override
@@ -48,7 +47,6 @@ public class SecondaryBProgram {
 			redPin.low();
 			yellowPin.low();
 			greenPin.high();
-			System.out.println("green");
 		}
 
 		@Override
@@ -56,7 +54,6 @@ public class SecondaryBProgram {
 			redPin.low();
 			yellowPin.high();
 			greenPin.low();
-			System.out.println("yellow");
 		}
 
 		@Override
@@ -64,7 +61,6 @@ public class SecondaryBProgram {
 			redPin.high();
 			yellowPin.low();
 			greenPin.low();
-			System.out.println("red");
 		}
 		
 	}
