@@ -23,7 +23,6 @@ async Crossroad [
 	component priorB : TrafficLightWrapper
 	component secondaryB : TrafficLightWrapper
 	component pedestrianB: PedestrianLightWrapper
-	component monitor : MonitorWrapper
 	
 	// Binding system ports to the ports of the components	
 	bind police -> controller.PoliceInterrupt
@@ -43,5 +42,4 @@ async Crossroad [
 	channel [controller.SecondaryPolice] -o)- [secondaryA.PoliceInterrupt,secondaryB.PoliceInterrupt]
 	channel [controller.PedestrianPolice] -o)- [pedestrianA.PoliceInterrupt,pedestrianB.PoliceInterrupt]
 	
-	channel [monitor.ErrorOut] -o)- [controller.Error]
 }

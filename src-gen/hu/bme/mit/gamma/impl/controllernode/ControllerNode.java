@@ -11,7 +11,6 @@ import hu.bme.mit.gamma.impl.channels.*;
 import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
 import hu.bme.mit.gamma.impl.controllerwrapper.*;
 import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
-import hu.bme.mit.gamma.impl.monitorwrapper.*;
 
 public class ControllerNode  {			
 	// Component instances
@@ -20,12 +19,11 @@ public class ControllerNode  {
 	private Police police = new Police();
 	// Inner channel instances
 	// Outer channel topics
-	private Topics errorOutOfMonitor;
+	private Topics priorityControlOfController;			
 	private Topics secondaryPoliceOfController;			
 	private Topics priorityPoliceOfController;			
-	private Topics secondaryControlOfController;			
 	private Topics pedestrianControlOfController;			
-	private Topics priorityControlOfController;			
+	private Topics secondaryControlOfController;			
 	private Topics pedestrianPoliceOfController;			
 	
 	public ControllerNode() {
@@ -43,18 +41,16 @@ public class ControllerNode  {
 		// Registration of simple channels
 		// Registration of broadcast channels
 		// Instantiation of topics
-		errorOutOfMonitor = new Topics("crossroad","errorOutOfMonitor");
-		errorOutOfMonitor.addSubscriptionListener(new ErrorOutOfMonitorListener());
+		priorityControlOfController = new Topics("crossroad","priorityControlOfController");
+		controller.getPriorityControl().registerListener(new PriorityControlOfControllerListener());
 		secondaryPoliceOfController = new Topics("crossroad","secondaryPoliceOfController");
 		controller.getSecondaryPolice().registerListener(new SecondaryPoliceOfControllerListener());
 		priorityPoliceOfController = new Topics("crossroad","priorityPoliceOfController");
 		controller.getPriorityPolice().registerListener(new PriorityPoliceOfControllerListener());
-		secondaryControlOfController = new Topics("crossroad","secondaryControlOfController");
-		controller.getSecondaryControl().registerListener(new SecondaryControlOfControllerListener());
 		pedestrianControlOfController = new Topics("crossroad","pedestrianControlOfController");
 		controller.getPedestrianControl().registerListener(new PedestrianControlOfControllerListener());
-		priorityControlOfController = new Topics("crossroad","priorityControlOfController");
-		controller.getPriorityControl().registerListener(new PriorityControlOfControllerListener());
+		secondaryControlOfController = new Topics("crossroad","secondaryControlOfController");
+		controller.getSecondaryControl().registerListener(new SecondaryControlOfControllerListener());
 		pedestrianPoliceOfController = new Topics("crossroad","pedestrianPoliceOfController");
 		controller.getPedestrianPolice().registerListener(new PedestrianPoliceOfControllerListener());
 		reset();
@@ -64,13 +60,13 @@ public class ControllerNode  {
 	public class Police implements PoliceInterruptInterface.Required {
 	
 		@Override
-		public void raiseReset() {
-			controller.getPoliceInterrupt().raiseReset();
+		public void raisePolice() {
+			controller.getPoliceInterrupt().raisePolice();
 		}
 		
 		@Override
-		public void raisePolice() {
-			controller.getPoliceInterrupt().raisePolice();
+		public void raiseReset() {
+			controller.getPoliceInterrupt().raiseReset();
 		}
 		
 		
@@ -91,6 +87,14 @@ public class ControllerNode  {
 	}
 	
 	// Inner classes for publishing events
+	class PriorityControlOfControllerListener implements ControlInterface.Listener.Provided {
+	
+		public void raiseToggle() {
+			priorityControlOfController.publishEvent("toggle", "");
+		}	
+			
+	
+	}	
 	class SecondaryPoliceOfControllerListener implements PoliceInterruptInterface.Listener.Provided {
 	
 		public void raiseReset() {
@@ -115,14 +119,6 @@ public class ControllerNode  {
 			
 	
 	}	
-	class SecondaryControlOfControllerListener implements ControlInterface.Listener.Provided {
-	
-		public void raiseToggle() {
-			secondaryControlOfController.publishEvent("toggle", "");
-		}	
-			
-	
-	}	
 	class PedestrianControlOfControllerListener implements ControlInterface.Listener.Provided {
 	
 		public void raiseToggle() {
@@ -131,10 +127,10 @@ public class ControllerNode  {
 			
 	
 	}	
-	class PriorityControlOfControllerListener implements ControlInterface.Listener.Provided {
+	class SecondaryControlOfControllerListener implements ControlInterface.Listener.Provided {
 	
 		public void raiseToggle() {
-			priorityControlOfController.publishEvent("toggle", "");
+			secondaryControlOfController.publishEvent("toggle", "");
 		}	
 			
 	
@@ -153,14 +149,6 @@ public class ControllerNode  {
 	}	
 	
 	// Inner classes for receiving events
-	class ErrorOutOfMonitorListener implements SubscriptionListener{
-		public void gotMessage(String topic, String event, String params){
-			switch(event){
-				case "healthError": controller.getError().raiseHealthError();
-						break;
-			}
-		}	
-	}	
 	
 	/** Starts the running of the asynchronous node. */
 	public void start() {
@@ -179,12 +167,11 @@ public class ControllerNode  {
 	
 	// Method for closing the topics
 	public void closeTopics(){
-		errorOutOfMonitor.closeTopic();
+		priorityControlOfController.closeTopic();
 		secondaryPoliceOfController.closeTopic();
 		priorityPoliceOfController.closeTopic();
-		secondaryControlOfController.closeTopic();
 		pedestrianControlOfController.closeTopic();
-		priorityControlOfController.closeTopic();
+		secondaryControlOfController.closeTopic();
 		pedestrianPoliceOfController.closeTopic();
 	}
 	

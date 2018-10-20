@@ -94,11 +94,11 @@ public class TrafficLightCtrlStatechart implements TrafficLightCtrlStatechartInt
 					case "Control.Toggle": 
 						trafficLightCtrlStatemachine.getSCIControl().raiseToggle();
 					break;
-					case "PoliceInterrupt.Reset": 
-						trafficLightCtrlStatemachine.getSCIPoliceInterrupt().raiseReset();
-					break;
 					case "PoliceInterrupt.Police": 
 						trafficLightCtrlStatemachine.getSCIPoliceInterrupt().raisePolice();
+					break;
+					case "PoliceInterrupt.Reset": 
+						trafficLightCtrlStatemachine.getSCIPoliceInterrupt().raiseReset();
 					break;
 					default:
 						throw new IllegalArgumentException("No such event!");
@@ -137,13 +137,13 @@ public class TrafficLightCtrlStatechart implements TrafficLightCtrlStatechartInt
 		private List<PoliceInterruptInterface.Listener.Required> registeredListeners = new LinkedList<PoliceInterruptInterface.Listener.Required>();
 
 		@Override
-		public void raiseReset() {
-			getInsertQueue().add(new Event("PoliceInterrupt.Reset", null));
+		public void raisePolice() {
+			getInsertQueue().add(new Event("PoliceInterrupt.Police", null));
 		}
 		
 		@Override
-		public void raisePolice() {
-			getInsertQueue().add(new Event("PoliceInterrupt.Police", null));
+		public void raiseReset() {
+			getInsertQueue().add(new Event("PoliceInterrupt.Reset", null));
 		}
 
 		@Override
@@ -168,33 +168,28 @@ public class TrafficLightCtrlStatechart implements TrafficLightCtrlStatechartInt
 
 
 		@Override
-		public boolean isRaisedDisplayYellow() {
-			return trafficLightCtrlStatemachine.getSCILightCommands().isRaisedDisplayYellow();
-		}
-		@Override
-		public boolean isRaisedDisplayNone() {
-			return trafficLightCtrlStatemachine.getSCILightCommands().isRaisedDisplayNone();
+		public boolean isRaisedDisplayGreen() {
+			return trafficLightCtrlStatemachine.getSCILightCommands().isRaisedDisplayGreen();
 		}
 		@Override
 		public boolean isRaisedDisplayRed() {
 			return trafficLightCtrlStatemachine.getSCILightCommands().isRaisedDisplayRed();
 		}
 		@Override
-		public boolean isRaisedDisplayGreen() {
-			return trafficLightCtrlStatemachine.getSCILightCommands().isRaisedDisplayGreen();
+		public boolean isRaisedDisplayNone() {
+			return trafficLightCtrlStatemachine.getSCILightCommands().isRaisedDisplayNone();
+		}
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return trafficLightCtrlStatemachine.getSCILightCommands().isRaisedDisplayYellow();
 		}
 		@Override
 		public void registerListener(LightCommandsInterface.Listener.Provided listener) {
 			registeredListeners.add(listener);
 			trafficLightCtrlStatemachine.getSCILightCommands().getListeners().add(new SCILightCommandsListener() {
 				@Override
-				public void onDisplayYellowRaised() {
-					listener.raiseDisplayYellow();
-				}
-				
-				@Override
-				public void onDisplayNoneRaised() {
-					listener.raiseDisplayNone();
+				public void onDisplayGreenRaised() {
+					listener.raiseDisplayGreen();
 				}
 				
 				@Override
@@ -203,8 +198,13 @@ public class TrafficLightCtrlStatechart implements TrafficLightCtrlStatechartInt
 				}
 				
 				@Override
-				public void onDisplayGreenRaised() {
-					listener.raiseDisplayGreen();
+				public void onDisplayNoneRaised() {
+					listener.raiseDisplayNone();
+				}
+				
+				@Override
+				public void onDisplayYellowRaised() {
+					listener.raiseDisplayYellow();
 				}
 			});
 		}

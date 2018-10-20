@@ -9,9 +9,9 @@ import org.yakindu.scr.ITimer;
 import hu.bme.mit.gamma.impl.interfaces.*;
 import hu.bme.mit.gamma.impl.channels.*;
 import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
-import hu.bme.mit.gamma.impl.controllerwrapper.*;
 import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
 import hu.bme.mit.gamma.impl.monitorwrapper.*;
+import hu.bme.mit.gamma.impl.controllerwrapper.*;
 
 public class MonitorNode  {			
 	// Component instances

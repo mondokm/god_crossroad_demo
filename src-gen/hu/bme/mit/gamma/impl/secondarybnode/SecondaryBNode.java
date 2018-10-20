@@ -11,7 +11,6 @@ import hu.bme.mit.gamma.impl.channels.*;
 import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
 import hu.bme.mit.gamma.impl.controllerwrapper.*;
 import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
-import hu.bme.mit.gamma.impl.monitorwrapper.*;
 
 public class SecondaryBNode  {			
 	// Component instances
@@ -50,6 +49,10 @@ public class SecondaryBNode  {
 	
 		
 		@Override
+		public boolean isRaisedDisplayYellow() {
+			return secondaryB.getLightCommands().isRaisedDisplayYellow();
+		}
+		@Override
 		public boolean isRaisedDisplayRed() {
 			return secondaryB.getLightCommands().isRaisedDisplayRed();
 		}
@@ -60,10 +63,6 @@ public class SecondaryBNode  {
 		@Override
 		public boolean isRaisedDisplayGreen() {
 			return secondaryB.getLightCommands().isRaisedDisplayGreen();
-		}
-		@Override
-		public boolean isRaisedDisplayYellow() {
-			return secondaryB.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override

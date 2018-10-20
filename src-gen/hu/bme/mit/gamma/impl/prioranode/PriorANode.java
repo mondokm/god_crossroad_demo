@@ -11,7 +11,6 @@ import hu.bme.mit.gamma.impl.channels.*;
 import hu.bme.mit.gamma.impl.trafficlightwrapper.*;
 import hu.bme.mit.gamma.impl.controllerwrapper.*;
 import hu.bme.mit.gamma.impl.pedestrianlightwrapper.*;
-import hu.bme.mit.gamma.impl.monitorwrapper.*;
 
 public class PriorANode  {			
 	// Component instances
@@ -22,9 +21,9 @@ public class PriorANode  {
 	private PedestrianBOutput pedestrianBOutput = new PedestrianBOutput();
 	// Inner channel instances
 	// Outer channel topics
+	private Topics priorityControlOfController;			
 	private Topics priorityPoliceOfController;			
 	private Topics pedestrianControlOfController;			
-	private Topics priorityControlOfController;			
 	private Topics pedestrianPoliceOfController;			
 	
 	public PriorANode() {
@@ -43,12 +42,12 @@ public class PriorANode  {
 		// Registration of simple channels
 		// Registration of broadcast channels
 		// Instantiation of topics
+		priorityControlOfController = new Topics("crossroad","priorityControlOfController");
+		priorityControlOfController.addSubscriptionListener(new PriorityControlOfControllerListener());
 		priorityPoliceOfController = new Topics("crossroad","priorityPoliceOfController");
 		priorityPoliceOfController.addSubscriptionListener(new PriorityPoliceOfControllerListener());
 		pedestrianControlOfController = new Topics("crossroad","pedestrianControlOfController");
 		pedestrianControlOfController.addSubscriptionListener(new PedestrianControlOfControllerListener());
-		priorityControlOfController = new Topics("crossroad","priorityControlOfController");
-		priorityControlOfController.addSubscriptionListener(new PriorityControlOfControllerListener());
 		pedestrianPoliceOfController = new Topics("crossroad","pedestrianPoliceOfController");
 		pedestrianPoliceOfController.addSubscriptionListener(new PedestrianPoliceOfControllerListener());
 		reset();
@@ -58,6 +57,10 @@ public class PriorANode  {
 	public class PriorityAOutput implements LightCommandsInterface.Provided {
 	
 		
+		@Override
+		public boolean isRaisedDisplayYellow() {
+			return priorA.getLightCommands().isRaisedDisplayYellow();
+		}
 		@Override
 		public boolean isRaisedDisplayRed() {
 			return priorA.getLightCommands().isRaisedDisplayRed();
@@ -69,10 +72,6 @@ public class PriorANode  {
 		@Override
 		public boolean isRaisedDisplayGreen() {
 			return priorA.getLightCommands().isRaisedDisplayGreen();
-		}
-		@Override
-		public boolean isRaisedDisplayYellow() {
-			return priorA.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -95,6 +94,10 @@ public class PriorANode  {
 	
 		
 		@Override
+		public boolean isRaisedDisplayYellow() {
+			return pedestrianB.getLightCommands().isRaisedDisplayYellow();
+		}
+		@Override
 		public boolean isRaisedDisplayRed() {
 			return pedestrianB.getLightCommands().isRaisedDisplayRed();
 		}
@@ -105,10 +108,6 @@ public class PriorANode  {
 		@Override
 		public boolean isRaisedDisplayGreen() {
 			return pedestrianB.getLightCommands().isRaisedDisplayGreen();
-		}
-		@Override
-		public boolean isRaisedDisplayYellow() {
-			return pedestrianB.getLightCommands().isRaisedDisplayYellow();
 		}
 		
 		@Override
@@ -130,6 +129,14 @@ public class PriorANode  {
 	// Inner classes for publishing events
 	
 	// Inner classes for receiving events
+	class PriorityControlOfControllerListener implements SubscriptionListener{
+		public void gotMessage(String topic, String event, String params){
+			switch(event){
+				case "toggle": priorA.getControl().raiseToggle();
+						break;
+			}
+		}	
+	}	
 	class PriorityPoliceOfControllerListener implements SubscriptionListener{
 		public void gotMessage(String topic, String event, String params){
 			switch(event){
@@ -144,14 +151,6 @@ public class PriorANode  {
 		public void gotMessage(String topic, String event, String params){
 			switch(event){
 				case "toggle": pedestrianB.getControl().raiseToggle();
-						break;
-			}
-		}	
-	}	
-	class PriorityControlOfControllerListener implements SubscriptionListener{
-		public void gotMessage(String topic, String event, String params){
-			switch(event){
-				case "toggle": priorA.getControl().raiseToggle();
 						break;
 			}
 		}	
@@ -190,9 +189,9 @@ public class PriorANode  {
 	
 	// Method for closing the topics
 	public void closeTopics(){
+		priorityControlOfController.closeTopic();
 		priorityPoliceOfController.closeTopic();
 		pedestrianControlOfController.closeTopic();
-		priorityControlOfController.closeTopic();
 		pedestrianPoliceOfController.closeTopic();
 	}
 	
